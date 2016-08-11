@@ -1,16 +1,16 @@
 {
-  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "F878057459D5E7CADD402D2321362C0EE96EDB65",
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "D4CE6C7B44877C0EA5713BEB8574082DDF568B2B",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "F878057459D5E7CADD402D2321362C0EE96EDB65" : 0,
-    "94C988AAAB00F0A52F6BC2CAC315294EC84E06F4" : 0
+    "94C988AAAB00F0A52F6BC2CAC315294EC84E06F4" : 0,
+    "D4CE6C7B44877C0EA5713BEB8574082DDF568B2B" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "4FFFCBEC-56A0-44C6-B5F2-83E580F321B1",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "F878057459D5E7CADD402D2321362C0EE96EDB65" : "ZING_IOS\/",
-    "94C988AAAB00F0A52F6BC2CAC315294EC84E06F4" : ""
+    "94C988AAAB00F0A52F6BC2CAC315294EC84E06F4" : "",
+    "D4CE6C7B44877C0EA5713BEB8574082DDF568B2B" : "ZING_IOS\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Zing",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
@@ -24,7 +24,7 @@
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/imkostas\/ZING_IOS.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "F878057459D5E7CADD402D2321362C0EE96EDB65"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D4CE6C7B44877C0EA5713BEB8574082DDF568B2B"
     }
   ]
 }

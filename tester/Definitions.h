@@ -94,4 +94,6 @@ typedef enum code{
 //Notifications
 #define TYPING_DISABLED_WHILE_DRIVING @"Typing is disabled while driving. Please try again when stopped."
 
+#define URI  @"http://www.midpointz.com:8080/";
+
 #endif

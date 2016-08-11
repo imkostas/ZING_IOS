@@ -64,7 +64,11 @@
 
 //boolean to center map after search
 @property (nonatomic) BOOL shouldCenterMap;
+@property (readwrite, assign) BOOL isZoomed;
 @property (nonatomic, strong) NSMutableArray *searches;
+
+@property (nonatomic, strong) NSMutableArray *pairs;
+@property (nonatomic, strong) NSMutableArray *all;
 
 @property (nonatomic) BOOL showTerms;
 

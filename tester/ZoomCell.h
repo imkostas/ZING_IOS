@@ -14,6 +14,6 @@
 //cell for displaying previously searched locations or search results based on search string
 @property (strong, nonatomic) IBOutlet UILabel *name; //displays main address
 @property (strong, nonatomic) IBOutlet UILabel *distance; //displays city, region, country
-@property (strong, nonatomic) IBOutlet UISwitch *isZoomed;  //Is that person zoomed in?
+@property (strong, nonatomic) IBOutlet UISwitch *isZoomedSwitch;  //Is that person zoomed in?
 
 @end

@@ -8,9 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		312CD5291D2CC22000487C31 /* Pin.m in Sources */ = {isa = PBXBuildFile; fileRef = 312CD5281D2CC22000487C31 /* Pin.m */; };
+		31318A661D50E01F0026CEBA /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31318A651D50E01F0026CEBA /* SWRevealViewController.m */; };
+		31318A691D50E0310026CEBA /* SidebarTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31318A681D50E0310026CEBA /* SidebarTableViewController.m */; };
+		316D59521D513EFF0010E6F3 /* About.m in Sources */ = {isa = PBXBuildFile; fileRef = 316D59511D513EFF0010E6F3 /* About.m */; };
 		319471021D335D6200455D60 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 319471001D335D6200455D60 /* CoreGraphics.framework */; };
 		319471031D335D6200455D60 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 319471011D335D6200455D60 /* Foundation.framework */; };
 		319471051D335D7E00455D60 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 319471041D335D7E00455D60 /* UIKit.framework */; };
+		31BCA6D11D4AAB9400192666 /* GetIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 31BCA6D01D4AAB9400192666 /* GetIndex.m */; };
+		31BCA6DA1D4D024D00192666 /* GlobalData.m in Sources */ = {isa = PBXBuildFile; fileRef = 31BCA6D91D4D024D00192666 /* GlobalData.m */; };
+		31BCA6E21D4D158600192666 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 31BCA6E11D4D158600192666 /* Location.m */; };
+		31BCA6E51D4D15BE00192666 /* Pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 31BCA6E41D4D15BE00192666 /* Pair.m */; };
+		31CFF4C11D594EC9008AA5E5 /* IndexCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 31CFF4C01D594EC9008AA5E5 /* IndexCell.m */; };
 		31D98F481D230D8500567C9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98F471D230D8500567C9D /* main.m */; };
 		31D98F4E1D230D8500567C9D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98F4D1D230D8500567C9D /* ViewController.m */; };
 		31D98F511D230D8500567C9D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31D98F4F1D230D8500567C9D /* Main.storyboard */; };
@@ -26,14 +34,31 @@
 		31D98FB81D28347200567C9D /* ZoomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98FB71D28347200567C9D /* ZoomCell.m */; };
 		31D98FBC1D28368600567C9D /* Zoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98FBB1D28368600567C9D /* Zoom.m */; };
 		31D98FBF1D283F9D00567C9D /* Address.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98FBE1D283F9D00567C9D /* Address.m */; };
+		31E8CCA01D504B8100723528 /* LocationManagerSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 31E8CC9F1D504B8100723528 /* LocationManagerSingleton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		312CD5271D2CC19600487C31 /* Pin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Pin.h; sourceTree = "<group>"; };
 		312CD5281D2CC22000487C31 /* Pin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Pin.m; sourceTree = "<group>"; };
+		31318A641D50E01F0026CEBA /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
+		31318A651D50E01F0026CEBA /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
+		31318A671D50E0310026CEBA /* SidebarTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SidebarTableViewController.h; sourceTree = "<group>"; };
+		31318A681D50E0310026CEBA /* SidebarTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SidebarTableViewController.m; sourceTree = "<group>"; };
+		316D59501D513EFF0010E6F3 /* About.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = About.h; sourceTree = "<group>"; };
+		316D59511D513EFF0010E6F3 /* About.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = About.m; sourceTree = "<group>"; };
 		319471001D335D6200455D60 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		319471011D335D6200455D60 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		319471041D335D7E00455D60 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		31BCA6CF1D4AAB9400192666 /* GetIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetIndex.h; sourceTree = "<group>"; };
+		31BCA6D01D4AAB9400192666 /* GetIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetIndex.m; sourceTree = "<group>"; };
+		31BCA6D81D4D024C00192666 /* GlobalData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalData.h; sourceTree = "<group>"; };
+		31BCA6D91D4D024D00192666 /* GlobalData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalData.m; sourceTree = "<group>"; };
+		31BCA6E01D4D158600192666 /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
+		31BCA6E11D4D158600192666 /* Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Location.m; sourceTree = "<group>"; };
+		31BCA6E31D4D15BE00192666 /* Pair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pair.h; path = ../Pair.h; sourceTree = "<group>"; };
+		31BCA6E41D4D15BE00192666 /* Pair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Pair.m; path = ../Pair.m; sourceTree = "<group>"; };
+		31CFF4BF1D594EC9008AA5E5 /* IndexCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndexCell.h; sourceTree = "<group>"; };
+		31CFF4C01D594EC9008AA5E5 /* IndexCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndexCell.m; sourceTree = "<group>"; };
 		31D98F431D230D8400567C9D /* Zing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31D98F471D230D8500567C9D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		31D98F491D230D8500567C9D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -62,6 +87,8 @@
 		31D98FBD1D283F8100567C9D /* Address.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Address.h; sourceTree = "<group>"; };
 		31D98FBE1D283F9D00567C9D /* Address.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Address.m; sourceTree = "<group>"; };
 		31E183541D32C32A00739947 /* Zing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Zing.entitlements; sourceTree = "<group>"; };
+		31E8CC9E1D504B8100723528 /* LocationManagerSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationManagerSingleton.h; sourceTree = "<group>"; };
+		31E8CC9F1D504B8100723528 /* LocationManagerSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManagerSingleton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +119,41 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		3191AABF1D50E687006276DD /* Slide Bar */ = {
+			isa = PBXGroup;
+			children = (
+				31318A641D50E01F0026CEBA /* SWRevealViewController.h */,
+				31318A651D50E01F0026CEBA /* SWRevealViewController.m */,
+				31318A671D50E0310026CEBA /* SidebarTableViewController.h */,
+				31318A681D50E0310026CEBA /* SidebarTableViewController.m */,
+			);
+			name = "Slide Bar";
+			sourceTree = "<group>";
+		};
+		31BCA6DB1D4D0FC200192666 /* Index */ = {
+			isa = PBXGroup;
+			children = (
+				31BCA6CF1D4AAB9400192666 /* GetIndex.h */,
+				31BCA6D01D4AAB9400192666 /* GetIndex.m */,
+				31CFF4BF1D594EC9008AA5E5 /* IndexCell.h */,
+				31CFF4C01D594EC9008AA5E5 /* IndexCell.m */,
+			);
+			name = Index;
+			sourceTree = "<group>";
+		};
+		31BCA6DC1D4D109E00192666 /* Global Data */ = {
+			isa = PBXGroup;
+			children = (
+				31D98F641D242BC000567C9D /* UserInfo.h */,
+				31D98F651D242BDB00567C9D /* UserInfo.m */,
+				31BCA6D81D4D024C00192666 /* GlobalData.h */,
+				31BCA6D91D4D024D00192666 /* GlobalData.m */,
+				31E8CC9E1D504B8100723528 /* LocationManagerSingleton.h */,
+				31E8CC9F1D504B8100723528 /* LocationManagerSingleton.m */,
+			);
+			name = "Global Data";
+			sourceTree = "<group>";
+		};
 		31D98F3A1D230D8400567C9D = {
 			isa = PBXGroup;
 			children = (
@@ -115,18 +177,20 @@
 			children = (
 				31D98F951D24E34500567C9D /* Assets.xcassets */,
 				31D98F4F1D230D8500567C9D /* Main.storyboard */,
+				316D59501D513EFF0010E6F3 /* About.h */,
+				316D59511D513EFF0010E6F3 /* About.m */,
 				31D98F631D242BAF00567C9D /* Definitions.h */,
 				31D98F491D230D8500567C9D /* AppDelegate.h */,
 				31D98FB41D26F6A300567C9D /* AppDelegate.m */,
 				31D98F4C1D230D8500567C9D /* ViewController.h */,
 				31D98F4D1D230D8500567C9D /* ViewController.m */,
-				312CD5271D2CC19600487C31 /* Pin.h */,
-				312CD5281D2CC22000487C31 /* Pin.m */,
-				31D98F641D242BC000567C9D /* UserInfo.h */,
-				31D98F651D242BDB00567C9D /* UserInfo.m */,
-				31D98FB91D28347A00567C9D /* Zoom */,
-				31D98FB01D26C9B800567C9D /* External Libraries */,
+				3191AABF1D50E687006276DD /* Slide Bar */,
+				31BCA6DC1D4D109E00192666 /* Global Data */,
+				31BCA6DB1D4D0FC200192666 /* Index */,
 				31D98FA21D26C81200567C9D /* Contacts */,
+				31D98FB91D28347A00567C9D /* Zoom */,
+				31E8CC9D1D4FEBA100723528 /* Data Structures */,
+				31D98FB01D26C9B800567C9D /* External Libraries */,
 				31D98F541D230D8600567C9D /* LaunchScreen.storyboard */,
 				31D98F571D230D8600567C9D /* Info.plist */,
 				31D98F461D230D8500567C9D /* Supporting Files */,
@@ -174,6 +238,19 @@
 				31D98FBE1D283F9D00567C9D /* Address.m */,
 			);
 			name = Zoom;
+			sourceTree = "<group>";
+		};
+		31E8CC9D1D4FEBA100723528 /* Data Structures */ = {
+			isa = PBXGroup;
+			children = (
+				31BCA6E31D4D15BE00192666 /* Pair.h */,
+				31BCA6E41D4D15BE00192666 /* Pair.m */,
+				31BCA6E01D4D158600192666 /* Location.h */,
+				31BCA6E11D4D158600192666 /* Location.m */,
+				312CD5271D2CC19600487C31 /* Pin.h */,
+				312CD5281D2CC22000487C31 /* Pin.m */,
+			);
+			name = "Data Structures";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,16 +335,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31BCA6DA1D4D024D00192666 /* GlobalData.m in Sources */,
+				31BCA6E21D4D158600192666 /* Location.m in Sources */,
 				312CD5291D2CC22000487C31 /* Pin.m in Sources */,
+				31BCA6D11D4AAB9400192666 /* GetIndex.m in Sources */,
 				31D98FBC1D28368600567C9D /* Zoom.m in Sources */,
 				31D98F661D242BDB00567C9D /* UserInfo.m in Sources */,
+				31CFF4C11D594EC9008AA5E5 /* IndexCell.m in Sources */,
 				31D98FB31D26F45700567C9D /* Contact.m in Sources */,
 				31D98F4E1D230D8500567C9D /* ViewController.m in Sources */,
 				31D98F9D1D26C7F900567C9D /* ContactsVC.m in Sources */,
 				31D98F9E1D26C7F900567C9D /* ContactsCell.m in Sources */,
+				31BCA6E51D4D15BE00192666 /* Pair.m in Sources */,
+				31318A661D50E01F0026CEBA /* SWRevealViewController.m in Sources */,
 				31D98FB81D28347200567C9D /* ZoomCell.m in Sources */,
+				31E8CCA01D504B8100723528 /* LocationManagerSingleton.m in Sources */,
 				31D98F481D230D8500567C9D /* main.m in Sources */,
 				31D98FBF1D283F9D00567C9D /* Address.m in Sources */,
+				31318A691D50E0310026CEBA /* SidebarTableViewController.m in Sources */,
+				316D59521D513EFF0010E6F3 /* About.m in Sources */,
 				31D98FB51D26F6A300567C9D /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -41,6 +41,7 @@
 
 
 @synthesize shouldRefreshMapPins;
+@synthesize isZoomed;
 @synthesize shouldPauseRefreshMapPins;
 
 @synthesize connectedWIthOtherUser;
@@ -50,6 +51,9 @@
 @synthesize shouldCenterMap;
 
 @synthesize searches;
+
+@synthesize pairs;
+@synthesize all;
 
 //initializes user singleton
 + (UserInfo *)user {
@@ -80,7 +84,7 @@
         
         //send notification to active view
         [self.pushDelegate handlePushNotification:notification withType:type];
-        
+
     }
     
 }
@@ -94,9 +98,7 @@
         
         //Apple App ID
         appID = @"957856476";
-        
 
-        
         //Server request paths
         uri = @"http://www.midpointz.com:8080/";
         img_uri = @"https://api.organicparking.com/user_profile_images/";
@@ -104,7 +106,7 @@
         geocoding_uri = @"https://maps.googleapis.com/maps/api/geocode/json?address=";
         
         //initialize user profile info
-        username = [[[UIDevice currentDevice] name] stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.URLQueryAllowedCharacterSet];
+        username = [[[UIDevice currentDevice] name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
                 email = @"";
         profileImage = nil;
         userSpeed = 0.0f;
@@ -114,6 +116,7 @@
         userImages = [[NSCache alloc] init];
         
         //indicates if map should be refreshed
+        isZoomed = true;
         shouldRefreshMapPins = false;
         shouldPauseRefreshMapPins = NO;
         
@@ -123,6 +126,9 @@
         //indicates if map should center on searched location - initialize search arrays
         shouldCenterMap = false;
         searches = [[NSMutableArray alloc] init];
+        
+        pairs = [[NSMutableArray alloc] init];
+        all = [[NSMutableArray alloc] init];
         
     }
     

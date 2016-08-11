@@ -11,6 +11,11 @@
 #import <CoreLocation/CoreLocation.h>
 #import "Pin.h"
 #import "UserInfo.h"
+#import "Location.h"
+#import "Pair.h"
+#import "GlobalData.h"
+#import "LocationManagerSingleton.h"
+
 
 @interface ViewController : UIViewController <	UISearchBarDelegate,
                                                 UISearchControllerDelegate,
@@ -19,23 +24,35 @@
                                                 UITableViewDelegate,
                                                 UIScrollViewDelegate,
                                                 MKMapViewDelegate,
-                                                UIGestureRecognizerDelegate>
-{
+                                                PushControlDelegate,
+                                                UIGestureRecognizerDelegate> {
+
+    
 
 @private
 CGRect _searchTableViewRect;
+    
 }
 
+
+@property LocationManagerSingleton *locationManagerSingleton;
+@property CLLocation *myCurrentLocation;
+
+
 @property (strong, nonatomic) IBOutlet MKMapView *mapView; //map view for showing pins
+
 //@property (strong, nonatomic) IBOutlet UISearchBar *ibSearchBar;
 @property (strong, nonatomic) UISearchController *searchController;
 @property (strong, nonatomic) MKLocalSearch *localSearch;
 @property (strong, nonatomic) MKLocalSearchResponse *results;
 
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
+
+
 @property (nonatomic) UserInfo *user; //user info
 
 //location manager to update and get user location
-@property (nonatomic, strong) CLLocationManager *locationManager;
+//@property (nonatomic, strong) CLLocationManager *locationManager;
 
 //tracking
 @property (nonatomic, strong) MKPointAnnotation *trackingPoint;

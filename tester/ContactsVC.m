@@ -8,6 +8,7 @@
 
 #import "ContactsVC.h"
 #import "Contact.h"
+#import "SWRevealViewController.h"
 
 @interface ContactsVC ()
 
@@ -25,6 +26,7 @@
     NSArray *allPeople;
     
     Contact *contact;
+    UserInfo *userinfo;
 
 }
 
@@ -32,6 +34,18 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    //initialize user info object
+    self.user = [UserInfo user];
+    
+    
+    SWRevealViewController *revealViewController = self.revealViewController;
+    if ( revealViewController )
+    {
+        [self.sidebarButton setTarget: self.revealViewController];
+        [self.sidebarButton setAction: @selector( revealToggle: )];
+        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+    }
     
     // Request authorization to Address Book
     ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, NULL);
@@ -125,12 +139,13 @@
     } else {
         contact = [contacts objectAtIndex:indexPath.row];
     }
-    UIAlertView * alert =[[UIAlertView alloc ] initWithTitle:contact.name message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
-    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
-    [alert addButtonWithTitle:@"Call"];
-    UITextField* textField = [alert textFieldAtIndex:0];
-    textField.text =contact.phone;
-    [alert show];
+//    UIAlertView * alert =[[UIAlertView alloc ] initWithTitle:contact.name message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
+//    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+//    [alert addButtonWithTitle:@"Call"];
+//    UITextField* textField = [alert textFieldAtIndex:0];
+//    textField.text =contact.phone;
+//    [alert show];
+    [self sendAPNS:contact];
     
 }
 
@@ -204,6 +219,81 @@
         
       //  NSLog(@"=============================================");
     }
+}
+
+
+
+
+
+//**************************************************************************************
+
+- (void)sendAPNS:(Contact*)myContact {
+    
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    
+    [request setURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@notification/%@&Do you wanna Zing?", self.user.uri, self.user.udid ]]];
+    NSLog(@"set %@", request.URL);
+    
+    [request setHTTPMethod:@"GET"];
+    
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (!error) {
+            NSString *requestReply = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+            NSLog(@"set requestReply: %@", requestReply);
+        } else {
+            NSLog(@"error : %@", error.description);
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Error Connecting to Server" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alertView show];
+        }
+    }] resume];
+    
+}
+
+
+//**************************************************************************************
+
+- (void)sendSMS:(Contact*)myContact {
+    
+    if(![MFMessageComposeViewController canSendText]) {
+        UIAlertView *warningAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Your device doesn't support SMS!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [warningAlert show];
+        return;
+    }
+    
+    NSArray *recipients = @[myContact.phone];
+    NSString *message = [NSString stringWithFormat:@"I would like to invite you to use zing\n%@", myContact.name];
+    
+    MFMessageComposeViewController *messageController = [[MFMessageComposeViewController alloc] init];
+    messageController.messageComposeDelegate = self;
+    [messageController setRecipients:recipients];
+    [messageController setBody:message];
+    
+    // Present message view controller on screen
+    [self presentViewController:messageController animated:YES completion:nil];
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult) result
+{
+    switch (result) {
+        case MessageComposeResultCancelled:
+            break;
+            
+        case MessageComposeResultFailed:
+        {
+            UIAlertView *warningAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Failed to send SMS!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [warningAlert show];
+            break;
+        }
+            
+        case MessageComposeResultSent:
+            break;
+            
+        default:
+            break;
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 

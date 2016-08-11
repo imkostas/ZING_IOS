@@ -7,14 +7,13 @@
 //
 
 #import "Zoom.h"
+#import "SWRevealViewController.h"
 
-@interface Zoom () <UISearchDisplayDelegate, UISearchBarDelegate>{
-    
-    NSArray *searchResultPlaces; //array for storing search results
-    
-    NSString *addressTitle; //used for saving parsed query results
-    NSString *addressSubtitle; //used for saving parsed query results
-    
+@interface Zoom () {
+   
+    BOOL value;
+    NSMutableDictionary *zdic;
+    UIActivityIndicatorView *spinner;
 }
 
 @end
@@ -22,37 +21,64 @@
 @implementation Zoom
 
 {
-    Address *address;
     
-    NSMutableArray *addresses;
-    NSArray *searchResults;
-    
-    MKLocalSearch *localSearch;
-    MKLocalSearchResponse *results;
-
 }
-
-@synthesize searchBar;
-
-#define TOP_BAR_HEIGHT 65.0
-
 
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
     
+    SWRevealViewController *revealViewController = self.revealViewController;
+    if ( revealViewController )
+    {
+        [self.sidebarButton setTarget: self.revealViewController];
+        [self.sidebarButton setAction: @selector( revealToggle: )];
+        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+    }
+    
     //initialize user info
     self.user = [UserInfo user];
-    [self.searchDisplayController setDelegate:self];
-    searchBar.delegate = self;
-    [searchBar setHidden:YES];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUsersToTrack) name:@"GetAllLocations" object:nil];
+
+    spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    spinner.center = CGPointMake(160, 240);
+    spinner.hidesWhenStopped = YES;
+    [self.view addSubview:spinner];
+    [spinner startAnimating];
+
+    self.user.pairs = [[GlobalData shared] GetAllLocations:self.user.udid];
 
     
-    
+    // Initialize the refresh control.
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.backgroundColor = [UIColor whiteColor];
+    self.refreshControl.tintColor = [UIColor blackColor];
+    [self.refreshControl addTarget:self
+                            action:@selector(getUsersToTrack)
+                  forControlEvents:UIControlEventValueChanged];
+
 }
 
+//******************************************************************
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.tableView reloadData];
+}
 
+//******************************************************************
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+}
+
+//******************************************************************
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:(BOOL)animated];
+
+}
+//******************************************************************
 - (void)didReceiveMemoryWarning {
     
     [super didReceiveMemoryWarning];
@@ -60,9 +86,28 @@
 }
 
 
+//******************************************************************
+-(void) getUsersToTrack{
+    
+ //   self.user.pairs = [[GlobalData shared] GetAllLocations:self.user.udid];
 
+    [spinner stopAnimating];
+    [self.tableView reloadData];
+    [self.refreshControl endRefreshing];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"GetAllLocations" object:nil];
+    
+    
+}
 
+//******************************************************************
+- (IBAction)buttonPressed:(UIButton *)sender
+{
+    for(int i=0; i<[self.user.pairs count]; i++)
+        value = [[NSUserDefaults standardUserDefaults] boolForKey:[[self.user.pairs objectAtIndex:i] udid]];
+    [self.tableView reloadData];
+}
 
+//******************************************************************
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
     //only one section is needed
@@ -70,48 +115,7 @@
     
 }
 
-
--(void)searchBarSearchButtonClicked:(UISearchBar *)theSearchBar
-{
-    
-        // Cancel any previous searches.
-        [localSearch cancel];
-        
-        // Perform a new search.
-        MKLocalSearchRequest *request = [[MKLocalSearchRequest alloc] init];
-        request.naturalLanguageQuery = searchBar.text;
-//        request.region = self.mapView.region;
-        
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-        localSearch = [[MKLocalSearch alloc] initWithRequest:request];
-        
-        [localSearch startWithCompletionHandler:^(MKLocalSearchResponse *response, NSError *error){
-            
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-            
-            if (error != nil) {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Map Error",nil)
-                                            message:[error localizedDescription]
-                                           delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"OK",nil) otherButtonTitles:nil] show];
-                return;
-            }
-            
-            if ([response.mapItems count] == 0) {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"No Results",nil)
-                                            message:nil
-                                           delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"OK",nil) otherButtonTitles:nil] show];
-                return;
-            }
-            
-            results = response;
-            
-            [self.searchDisplayController.searchResultsTableView reloadData];
-        }];
-    }
-
-
+//******************************************************************
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     //height for custom cell
@@ -120,11 +124,10 @@
 }
 
 
-
-//*******************************
-
+//******************************************************************
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     static NSString *CellIdentifier = @"CustomTableCell";
     ZoomCell *cell = (ZoomCell *)[self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
@@ -133,61 +136,79 @@
         cell = [[ZoomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    // Display recipe in the table cell
-    address = nil;
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        address = [searchResults objectAtIndex:indexPath.row];
-    } else {
-        address = [addresses objectAtIndex:indexPath.row];
+    // Display user in the table cell
+    Location *location = [[Location alloc] init];
+    
+    location = [self.user.pairs objectAtIndex:indexPath.row];
+    cell.name.text = [location.username stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];  //]NSASCIIStringEncoding];
+                    CLLocationCoordinate2D pointACoordinate = [location coordinates];
+                    CLLocation *pointALocation = [[CLLocation alloc] initWithLatitude:pointACoordinate.latitude longitude:pointACoordinate.longitude];
+                    CLLocationCoordinate2D pointBCoordinate = self.user.coordinates;
+                    CLLocation *pointBLocation = [[CLLocation alloc] initWithLatitude:pointBCoordinate.latitude longitude:pointBCoordinate.longitude];
+                    double distanceMeters = [pointALocation distanceFromLocation:pointBLocation];
+                    double distanceMiles = (distanceMeters / 1609.344);
+                    double distanceFeet = (distanceMeters * 3.28084);
+    if(indexPath.row>0){
+        if(distanceMeters>1610.)
+            cell.distance.text = [NSString stringWithFormat:@"%.2f miles/%.2f km", distanceMiles, distanceMeters/1000.];
+        else
+            cell.distance.text = [NSString stringWithFormat:@"%.2f ft or %.2f m", distanceFeet, distanceMeters];
     }
+        BOOL zoomValue = [[NSUserDefaults standardUserDefaults] boolForKey:[[self.user.pairs objectAtIndex:indexPath.row] udid]];
+        [cell.isZoomedSwitch setOn: zoomValue];
     
-    cell.name.text = address.address;
-    cell.distance.text = address.area;
-  
-    MKMapItem *item = results.mapItems[indexPath.row];
-    
-    cell.name.text = item.name;
-    cell.distance.text = item.placemark.addressDictionary[@"Street"];
+    [cell.isZoomedSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
 
     return cell;
 }
 
-//*******************************
-
+//*******************************<<<<<<<<<<<<<<<
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    address = [addresses objectAtIndex:indexPath.row];
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    ZoomCell *cell = (ZoomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    [cell.isZoomedSwitch setOn:!cell.isZoomedSwitch.on animated:YES];
     
-//    [self.searchDisplayController setActive:NO animated:YES];
-//    
-//    MKMapItem *item = results.mapItems[indexPath.row];
-//    [self.mapView addAnnotation:item.placemark];
-//    [self.mapView selectAnnotation:item.placemark animated:YES];
-//    
-//    [self.mapView setCenterCoordinate:item.placemark.location.coordinate animated:YES];
-//    
-//    [self.mapView setUserTrackingMode:MKUserTrackingModeNone];
+    Location *location = [[Location alloc] init];
+    location = [self.user.pairs objectAtIndex:indexPath.row];
+    [self switchChanged:cell.isZoomedSwitch];
+    [[NSUserDefaults standardUserDefaults] setBool:value forKey:location.udid];
+//    NSLog(@"%lu username = %@ value = %i", indexPath.row, [self.user username], value);
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    //CHeck if user selects all zooms off
+    int noZooms = 0;
+    for(int i=0; i<self.user.pairs.count; i++)
+        if([[NSUserDefaults standardUserDefaults] boolForKey:[[self.user.pairs objectAtIndex:i] udid]]==1)
+            noZooms++;
+    if(noZooms==0){
+        value = true;
+        [[NSUserDefaults standardUserDefaults] setBool:value forKey:location.udid];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [cell.isZoomedSwitch setOn:value animated:YES];
+        return;
+    }
 
+
+}
+
+//*******************************
+-(void) switchChanged:(id)sender {
+    UISwitch* switcher = (UISwitch*)sender;
+    value = switcher.on;
 }
 
 
 
+//******************************************************************
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    //if search bar length equal to 0, allow to delete since it is previous search history data
-    if(self.searchBar.text.length == 0){
-        
-        return true;
-        
-    }
-    
+
     return false;
     
 }
 
-
+//******************************************************************
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [results.mapItems count];
+    return [self.user.pairs count];
 }
 
 

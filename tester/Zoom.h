@@ -9,14 +9,15 @@
 #import "UserInfo.h"
 #import "Address.h"
 #import "ZoomCell.h"
+#import "ViewController.h"
+#import "Location.h"
 
-@interface Zoom : UITableViewController <UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource>
+@interface Zoom : UITableViewController <UITableViewDelegate, UITableViewDataSource>
 
-//search view contents
-@property (strong, nonatomic) IBOutlet UISearchBar *searchBar; //search bar for entering search location
-@property (strong, nonatomic) IBOutlet UIButton *cancelSearchBtn; //dismisses search view
 
 //view variables
 @property (nonatomic, strong) UserInfo *user; //user info
+
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 
 @end

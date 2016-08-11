@@ -10,6 +10,8 @@
 #import <Foundation/Foundation.h>
 #import "UserInfo.h"
 #import <AddressBookUI/AddressBookUI.h>
+#import "GlobalData.h"
+
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "LocationManagerSingleton.h"
+
 
 @interface AppDelegate ()
 
@@ -18,8 +20,10 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    //initialize user info object
+    
+    //initialize user info object (Singleton)
     self.user = [UserInfo user];
+    
     
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
         
@@ -33,14 +37,21 @@
         
     }
     
-//    NSHost *host;
-//    
-//    NSLog(@"%@",[[UIDevice currentDevice] name]);
-//    NSLog(@"user == %@",[[[NSHost currentHost] names] objectAtIndex:0]);
-//
-//
-//    NSArray *nameArray = [[NSHost currentHost] names];
-//    NSString *user = [nameArray objectAtIndex:0];
+    if ([launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]) {
+        
+        
+        [[LocationManagerSingleton sharedLocationInstance].myLocationManager startMonitoringSignificantLocationChanges];
+        
+    }else{
+    /////////////////////////////
+    [[LocationManagerSingleton sharedLocationInstance]setDelegate:self];
+    [[LocationManagerSingleton sharedLocationInstance].myLocationManager startUpdatingLocation];
+    /////////////////////////////
+    }
+    
+    
+
+
     
     return YES;
 }
@@ -59,12 +70,23 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    [[LocationManagerSingleton sharedLocationInstance].myLocationManager stopUpdatingLocation];
+    [[LocationManagerSingleton sharedLocationInstance].myLocationManager startMonitoringSignificantLocationChanges];
+    NSLog(@"entered background Mode");
+   ////////// [[GlobalData shared] sendAPNS:self.user.udid withMessage:@"backgroundMode"]; ////////////
+
+    
 }
 
 //**************************************************************************************//
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
+    [[LocationManagerSingleton sharedLocationInstance].myLocationManager stopMonitoringSignificantLocationChanges];
+    [[LocationManagerSingleton sharedLocationInstance].myLocationManager startUpdatingLocation];
+    NSLog(@"application Did Become Active");
 }
 
 //**************************************************************************************//
@@ -100,11 +122,19 @@
     
     //save device token in user info
     self.user.udid = tokenString;
-    NSLog(@"self.user.device = %@", self.user.udid);
+    [[NSUserDefaults standardUserDefaults] setObject:tokenString forKey:@"udid"];
+    NSLog(@"name = %@ device = %@", [[[NSUserDefaults standardUserDefaults] objectForKey:@"username"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
+                                    [[NSUserDefaults standardUserDefaults] objectForKey:@"udid"]);
+    [[NSUserDefaults standardUserDefaults] synchronize];
     
-    
-}
+    NSString *username = [[[UIDevice currentDevice] name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
+    self.user.username = username;
+    [[NSUserDefaults standardUserDefaults] setObject:username forKey:@"username"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 
+
+}
+//**************************************************************************************//
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error {
     
     NSLog(@"Failed to register for remote notifications: %@", [error description]);
@@ -113,11 +143,11 @@
     self.user.udid = @"";
     
     //notify user they should enable push notifications
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Enable Location Services" message:@"To use King, push notifications services must be enabled within Settings" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Enable Location Services" message:@"To use Zing, push notifications services must be enabled within Settings" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
     [alertView show];
     
 }
-
+//**************************************************************************************//
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     
     NSLog(@"didReceiveLocalNotification");
@@ -126,13 +156,15 @@
     if(application.applicationState == UIApplicationStateActive){
         
         //indicate push has been received
-        [self.user receivedNotification:notification.userInfo withType:[NSString stringWithFormat:@"%@", [notification.userInfo objectForKey:@"type"]]];
+        [self.user receivedNotification:notification.userInfo withType:[NSString stringWithFormat:@"%@", [notification.userInfo objectForKey:@"id"]]];
         
     }
     
-    
 }
 
+
+
+// **************************************************************************************
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)info {
     
@@ -141,64 +173,138 @@
     
     //if application is active, show specific alert/message
     if(application.applicationState == UIApplicationStateActive){
-        
+
         //push types
-        if([[[info objectForKey:@"info"] valueForKeyPath:@"type"] isEqualToString:@"canceledDeal"]){
+        if([[info objectForKey:@"id"]  isEqualToString:@"request"]){
             
-            //indicate push has been received
-            [self.user receivedNotification:info withType:@"canceledDeal"];
+            //Can we connect? Please?
+             [self.user receivedNotification:info withType:@"request"];
+        
+        } else if([[info objectForKey:@"id"]  isEqualToString:@"yes"]) {
             
-        } else if([[[info objectForKey:@"info"] valueForKeyPath:@"type"] isEqualToString:@"autoDeletedPost"]) {
+            //YES
+             [self.user receivedNotification:info withType:@"yes"];
             
-            //indicate push has been received
-            [self.user receivedNotification:info withType:@"autoDeletedPost"];
             
-        } else if([[[info objectForKey:@"info"] valueForKeyPath:@"type"] isEqualToString:@"finalizedDeal"]) {
+        } else if([[info objectForKey:@"id"]  isEqualToString:@"no"]) {
             
-            //indicate push has been received
-            [self.user receivedNotification:info withType:@"finalizedDeal"];
+            //NO
+             [self.user receivedNotification:info withType:@"no"];
             
-        } else if([[[info objectForKey:@"info"] valueForKeyPath:@"type"] isEqualToString:@"postRequested"]) {
+        }else if([[info objectForKey:@"id"]  isEqualToString:@"silent"]) {
             
-            //indicate push has been received
-            [self.user receivedNotification:info withType:@"postRequested"];
+            //SILENT
+            NSLog(@"SILENT");
             
-        } else if([[[info objectForKey:@"info"] valueForKeyPath:@"type"] isEqualToString:@"respondedToRequest"]) {
-            
-            //indicate push has been received
-            [self.user receivedNotification:info withType:@"respondedToRequest"];
-            
-        } else if([[[info objectForKey:@"info"] valueForKeyPath:@"type"] isEqualToString:@"missedMessage"]) {
-            
-            //indicate push has been received
-            [self.user receivedNotification:info withType:@"missedMessage"];
             
         }
-        
     }
-    
+
     else if(application.applicationState == UIApplicationStateBackground) {
         
-        NSLog(@"Creating local notification");
+        NSLog(@"UIApplicationStateBackground");
         
-        UILocalNotification *notification = [[UILocalNotification alloc] init];
-        notification.timeZone = [NSTimeZone localTimeZone];
-        notification.alertBody = NSLocalizedString([[info objectForKey:@"aps"] valueForKey:@"alert"], nil);
-        notification.alertAction = NSLocalizedString(@"Take Action", nil);
-        notification.soundName = UILocalNotificationDefaultSoundName;
-        notification.applicationIconBadgeNumber = 1;
-        NSDictionary *infoDict = [NSDictionary dictionaryWithObject:[[info objectForKey:@"info"] valueForKeyPath:@"type"] forKey:@"type"];
-        notification.userInfo = infoDict;
-        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        if([[info objectForKey:@"id"]  isEqualToString:@"silent"]) {
+            
+            //SILENT
+            NSLog(@"BACK SILENT");
+            
+        }
+        else{
+        
+        NSLog(@"Creating local notification");
+//        
+//        UILocalNotification *notification = [[UILocalNotification alloc] init];
+//        notification.timeZone = [NSTimeZone localTimeZone];
+//        notification.alertBody = NSLocalizedString([info objectForKey:@"alert"] , nil);
+//        notification.alertAction = NSLocalizedString(@"Take Action", nil);
+//        notification.soundName = UILocalNotificationDefaultSoundName;
+//        notification.applicationIconBadgeNumber = 1;
+//        NSDictionary *infoDict = [NSDictionary dictionaryWithObject:[info objectForKey:@"id"] forKey:@"id"];
+//        notification.userInfo = infoDict;
+//        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+            
+        }
         
     } else if (application.applicationState == UIApplicationStateInactive) {
         
         NSLog(@"App Inactive");
-        
     }
     
 }
 
+
+// **************************************************************************************
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if([[alertView buttonTitleAtIndex:buttonIndex]isEqual:@"ZING"]) {  //YES
+        [self sendAPNS:self.user for:@"yes"];
+    }
+    else if([[alertView buttonTitleAtIndex:buttonIndex]isEqual:@"NOT NOW"]) {  //NO
+        [self sendAPNS:self.user for:@"no"];
+    }
+    else if([[alertView buttonTitleAtIndex:buttonIndex]isEqual:@"GOOD"]) {  //
+        ;
+    }
+    else if([[alertView buttonTitleAtIndex:buttonIndex]isEqual:@"OH WELL"]) {  //
+        ;
+    }
+    
+}
+
+
+//**************************************************************************************
+
+- (void)sendAPNS:(UserInfo*)myContact for:(NSString *)id{
+    
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    
+
+    NSString *emessage;
+    NSString *eusername = [myContact.username stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    if([id isEqualToString:@"yes"]){
+        emessage = [[NSString stringWithFormat:@"%@ allows to zing with you", [myContact.username stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    }
+    else if([id isEqualToString:@"no"]){
+         emessage = [[NSString stringWithFormat:@"%@ allows to zing with you", [myContact.username stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        
+    }
+    else{
+        emessage = @"";
+    }
+//    NSString *username = myContact.username;
+//    NSString *eusername = [username stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+//    
+//    NSString *message =  [NSString stringWithFormat:@"%@ wants to zing with you", myContact.username];
+//    NSString *emessage = [message stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    [request setURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@notification/%@&%@&%@&request",  self.user.uri, eusername, myContact.udid, emessage ]]];
+    NSLog(@"notification %@", request.URL);
+    
+    [request setHTTPMethod:@"GET"];
+    
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        if (!error) {
+            NSString *requestReply = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+            NSLog(@"set requestReply: %@", requestReply);
+        } else {
+            NSLog(@"error : %@", error.description);
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Error Connecting to Server" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alertView show];
+        }
+    }] resume];
+    
+}
+
+
+- (void)batteryStateDidChange:(NSNotification *)notification
+{
+    
+
+}
 
 
 @end
