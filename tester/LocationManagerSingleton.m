@@ -109,7 +109,7 @@
                             [[GlobalData shared] SetLocation:self.myLocationManager.location];
             
                             NSLog(@"IN BACKGROUND SEND SET ");
-                            [[GlobalData shared] sendAPNS:self.user.udid withMessage:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"] andIdentification:@"silent"]; ////////////
+            [[GlobalData shared] sendAPNS:self.user.username withUDID:self.user.udid withMessage:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"] andIdentification:@"silent"]; ////////////
 
 
                             // Start the long-running task and return immediately.

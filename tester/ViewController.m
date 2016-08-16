@@ -7,7 +7,6 @@
 //
 
 #import "ViewController.h"
-#import "SWRevealViewController.h"
 
 
 
@@ -15,6 +14,9 @@
     
     BOOL updatedLocation;
     UserInfo *userinfo;
+    BOOL GetAllLocations;
+    BOOL SetLocation;
+
     
 }
 
@@ -42,34 +44,27 @@
     
    // NSLog(@"DID LOAD");
     
-    SWRevealViewController *revealViewController = self.revealViewController;
-    if ( revealViewController )
-    {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector( revealToggle: )];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
 
     if(self.user==nil)
         self.user = [UserInfo user];
 
+    GetAllLocations = false;
+    SetLocation = false;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getAllLocations) name:@"SetLocation" object:nil];
-
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation) name:@"GetAllLocations" object:nil];
 
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(error) name:@"error" object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation) name:@"updateUserLocation" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation) name:@"updateUserLocation" object:nil];
 
-    ///////////////////////////////////////////
+    // Set up location operators
     self.locationManagerSingleton = [LocationManagerSingleton sharedLocationInstance];
     self.user.coordinates = [LocationManagerSingleton sharedLocationInstance].myLocationManager.location.coordinate;
     self.myCurrentLocation = [LocationManagerSingleton sharedLocationInstance].myLocationManager.location;
     
     [[LocationManagerSingleton sharedLocationInstance].myLocationManager startUpdatingLocation];
     
-    //////////////////////////////////////////////////
-
+    // Setup map
     self.mapView.delegate = self;
     self.mapView.mapType = MKMapTypeStandard;
     self.mapView.showsUserLocation = YES;
@@ -78,9 +73,6 @@
     
     self.user.pushDelegate = self;
 
-    // Set up location operators
-/////    [self setupLocationManager];
-    
     // Set up search operators
     [self setupSearchController];
     [self setupSearchBar];
@@ -88,17 +80,12 @@
     updatedLocation = false;
     
 
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:@"refresh" object:nil];
     
-//    NSTimer *tdata = [NSTimer scheduledTimerWithTimeInterval: 10.0  target: self  selector:@selector(refreshData)  userInfo: nil repeats:YES];
-    //[t invalidate];
-    // t = nil;
+//  NSTimer *tdata = [NSTimer scheduledTimerWithTimeInterval: 10.0  target: self  selector:@selector(refreshData)  userInfo: nil repeats:YES];
+//  [t invalidate];
+//  t = nil;
  
-//    NSTimer *tmap = [NSTimer scheduledTimerWithTimeInterval: 5.0
-//                                                      target: self
-//                                                    selector:@selector(refreshMap:)
-//                                                    userInfo: nil repeats:YES];
-
+    //  NOT NEEDED?????
     Location *location = [[Location alloc] init];
     location.username = self.user.username;
     location.udid = self.user.udid;
@@ -107,6 +94,14 @@
 
     [self refreshData];
 
+}
+
+// ******************************************************************
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self refreshData];
+   
 }
 
 // ********************
@@ -137,8 +132,8 @@
 // *****************************
 -(void) error{
     
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You seem not to be connected to the server" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-   // [alertView show];
+//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"You seem not to be connected to the server" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//    [alertView show];
 //    [self.view addSubview:alertView];
 //    [UIView animateWithDuration:0.25 animations:^{[alertView setAlpha:1.0f];}];
   
@@ -153,10 +148,6 @@
 
 
 
-
-
-
-
 //**************************************************************************************
 
 - (IBAction)refresh:(id)sender {
@@ -166,7 +157,7 @@
     
     [self zoomMapViewToFitAnnotations];
     for(int i=0; i<self.user.pairs.count; i++){
-        [[GlobalData shared] sendAPNS: [[self.user.pairs objectAtIndex:i] udid] withMessage:@"hi" andIdentification:@"silent"];
+        [[GlobalData shared] sendAPNS: self.user.username withUDID:[[self.user.pairs objectAtIndex:i] udid] withMessage:@"hi" andIdentification:@"silent"];
         NSLog(@"%@",[[self.user.pairs objectAtIndex:i] udid]);
     }
 
@@ -213,7 +204,7 @@
     {
         region.span.latitudeDelta = MINIMUM_ZOOM_ARC;
         region.span.longitudeDelta = MINIMUM_ZOOM_ARC;
-        NSLog(@"ONLY ONE PIN");
+       // NSLog(@"ONLY ONE PIN");
     }
     [self.mapView setRegion:region animated:YES];
     
@@ -223,10 +214,11 @@
 - (void)updateUserLocation
 {
     
+    //NSLog(@"updateUserLocation");
     // Remove all previous annotations.
     [self.mapView removeAnnotations:self.mapView.annotations];
     
-    //add annotations
+    // Add annotations again based on updated data
     for(int i=0; i<[self.user.pairs count]; i++){
         if([[NSUserDefaults standardUserDefaults] boolForKey:[[self.user.pairs objectAtIndex:i] udid]] == 0)
             continue;
@@ -234,11 +226,12 @@
         point.udid = [[self.user.pairs objectAtIndex:i] udid];
         point.coordinate = [[self.user.pairs objectAtIndex:i] coordinates];
         point.title = [[[self.user.pairs objectAtIndex:i] username] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        point.name = [[[self.user.pairs objectAtIndex:i] username] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         point.shouldZoom = YES;
         // Calculate distance to yourself
         CLLocationCoordinate2D pointACoordinate = [[self.user.pairs objectAtIndex:i] coordinates];
         CLLocation *pointALocation = [[CLLocation alloc] initWithLatitude:pointACoordinate.latitude longitude:pointACoordinate.longitude];
-        CLLocationCoordinate2D pointBCoordinate = [[self.user.pairs objectAtIndex:0] coordinates];
+        CLLocationCoordinate2D pointBCoordinate = [LocationManagerSingleton sharedLocationInstance].myLocationManager.location.coordinate;
         CLLocation *pointBLocation = [[CLLocation alloc] initWithLatitude:pointBCoordinate.latitude longitude:pointBCoordinate.longitude];
         double distanceMeters = [pointALocation distanceFromLocation:pointBLocation];
         double distanceMiles = (distanceMeters / 1609.344);
@@ -247,7 +240,6 @@
             point.subtitle = [NSString stringWithFormat:@"%.2f miles or %.2f km", distanceMiles, distanceMeters/1000.];
         else
             point.subtitle = [NSString stringWithFormat:@"%.2f ft or %.2f m", distanceFeet, distanceMeters];
-        if(i==0)continue;  //no pin on yourself
         [self.mapView addAnnotation:point];
         point = nil;
     }
@@ -272,39 +264,104 @@
 
 -(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control {
     id <MKAnnotation> annotation = [view annotation];
-    if ([annotation isKindOfClass:[Pin class]])
-    {
-        //NSLog(@"Clicked a=%@", ((Pin *)annotation).udid);
-        [[GlobalData shared] RemovePair:self.user.udid and:((Pin *)annotation).udid];
-        
+    if ([annotation isKindOfClass:[Pin class]]){
+        udidToDelete = ((Pin *)annotation).udid;
     }
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Delete User?" message:@"" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"DELETE", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"UNPAIR USER?" message:@"You can always pair again later" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"YES", nil];
     [alertView show];
 }
+
+// ****************************************************************
+NSString *udidToDelete;
+// ****************************************************************
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
+    if([title isEqualToString:@"Cancel"])
+    {
+        [self refreshData];
+    }
+    else if([title isEqualToString:@"YES"])
+    {
+        //add code here for when you hit delete
+        [[GlobalData shared] RemovePair:self.user.udid and:udidToDelete];
+        [[GlobalData shared] sendAPNS: self.user.username withUDID: udidToDelete withMessage:[NSString stringWithFormat:@"%@ has unpaired you", self.user.username] andIdentification:@"RemovePair"];
+        [self refreshData];
+    }
+}
+
 
 //**************************************************************************************
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
+    MKPinAnnotationView *pinView = nil;
     
     // Handle any custom annotations.
     if ([annotation isKindOfClass:[Pin class]])
     {
+        Pin *a = (Pin *)annotation;
         // Try to dequeue an existing pin view first.
-        MKPinAnnotationView *pinView = (MKPinAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"CustomPinAnnotationView"];
+        pinView = (MKPinAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"pin"];
+        
+        CGSize size = [[[NSAttributedString alloc] initWithString:@"1" attributes:@{NSFontAttributeName: [UIFont fontWithName:@"AvenirNext-Medium" size:25]}] boundingRectWithSize:CGSizeMake(230.0f, 999.0f) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size;
+        int width = (size.width < 25) ? 34 : size.width + 20;
+        int shadowWidth = (size.width < 25) ? 33 : size.width + 24;
+
+        UIImageView *pinShadow;
+        UIImageView *pinStemShadow;
+        
         if (!pinView)
         {
             // If an existing pin view was not available, create one.
-            pinView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"CustomPinAnnotationView"];
+            pinView = [[MKPinAnnotationView alloc] initWithAnnotation:a reuseIdentifier:@"pin"];
+            
+            pinShadow = [[UIImageView alloc]init];
+            pinShadow.frame = CGRectMake((pinView.bounds.origin.x + pinView.bounds.size.width)/2 - shadowWidth/2 + 4, pinView.bounds.origin.y + 3, shadowWidth, 33);
+            pinShadow.image = [[UIImage imageNamed:@"PinShadow2"] resizableImageWithCapInsets:UIEdgeInsetsMake(23.0f, 23.0f, 23.0f, 23.0f) resizingMode:UIImageResizingModeStretch];
+            
+            pinStemShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"PinStemShadow2"]];
+            pinStemShadow.frame = CGRectMake((pinView.bounds.origin.x + pinView.bounds.size.width)/2 - 8, pinView.bounds.origin.y + 32, 9, 9);
+         }
             pinView.canShowCallout = YES;
             pinView.calloutOffset = CGPointMake(-7, 0);
             
             // Add a detail disclosure button to the callout.
             UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
             pinView.rightCalloutAccessoryView = rightButton;
+        
+            UIImageView *pinStem = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"pin_stem"]];
+            pinStem.frame = CGRectMake((pinView.bounds.origin.x + pinView.bounds.size.width)/2 - 9.5,
+                                       pinView.bounds.origin.y + 18, 4, 24);
             
-        } else {
-            pinView.annotation = annotation;
-        }
+            UIImageView *pinCircle = [[UIImageView alloc] initWithFrame:CGRectMake((pinView.bounds.origin.x + pinView.bounds.size.width)/2 - width/2 - 7, pinView.bounds.origin.y - 5, width, 34)];
+
+            //set label view
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(18, 16, 26, 26)];
+            label.frame = CGRectMake(pinView.bounds.origin.x + (pinView.bounds.size.width/2) - width/2+1 , pinView.bounds.origin.y, size.width, label.frame.size.height);
+            label.textColor = [UIColor whiteColor];
+            label.backgroundColor = [UIColor clearColor];
+            label.font = [UIFont fontWithName:@"AvenirNext-Medium" size:24];
+            label.text = [[annotation.title substringToIndex:1] uppercaseString];
+           //NSLog(@"----- %@ %@ %@", annotation.title, a.title, a.name);
+            
+            
+            pinCircle.image = [[UIImage imageNamed:@"pin_circle_blue"] resizableImageWithCapInsets:UIEdgeInsetsMake(17.0f, 17.0f, 17.0f, 17.0f) resizingMode:UIImageResizingModeStretch];
+
+            [pinView addSubview:pinShadow];
+            [pinView addSubview:pinStemShadow];
+            [pinView addSubview:pinStem];
+            [pinView addSubview:pinCircle];
+            [pinView addSubview:label];
+            
+            // You may need to resize the image here.
+            //pinView.image = circleImage;
+           // pinView.pinColor = MKPinAnnotationColorGreen;
+            
+//        } else {
+//            pinView.annotation = annotation;
+//            
+//            NSLog(@"----- %@ %@ %@", annotation.title, a.title, a.name);
+//        }
         return pinView;
     }
     return nil;
@@ -529,36 +586,28 @@
 //method to display custom HUD for all server requests
 - (void)handlePushNotification:(NSDictionary *)notification withType:(NSString *)type {
     
-    NSLog(@"handlePushNotification");
+    NSString *theMessage = [[[notification objectForKey:@"aps"] objectForKey:@"alert"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *title;
     
-    if([type isEqualToString:@"Local Notification"]){
-        
-        
-        
-    } else if([type isEqualToString:@"request"]){
-        
-        NSLog(@"request");
-        //[self customAlert:[NSString stringWithFormat:@"%@", [[notification objectForKey:@"aps"] valueForKey:@"alert"]] withDone:@"Ok" withColor:NO withTag:0];
-        UIAlertView *newAlertVw = [[UIAlertView alloc] initWithTitle:@"INFO" message:@"hi" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [newAlertVw show];
-        
-    } else if([type isEqualToString:@"yes"]){
-        
-       // [self customAlert:[NSString stringWithFormat:@"%@", [[notification objectForKey:@"aps"] valueForKey:@"alert"]] withDone:@"Ok" withColor:NO withTag:0];
-        
-      //  [self hideCurrentView];
-      //  NSLog(@"View should have been hidden");
-      //  [self refreshMapPins];
+    if([type isEqualToString:@"RemovePair"]){
+        title = @"Removed Pair";
+    } else if([type isEqualToString:@"CreatePair"]){
+        title = @"Create Pair";
+    }else if([type isEqualToString:@"request"]){
+        title = @"Requested Pair";
+    }  else if([type isEqualToString:@"yes"]){
+
         
     } else if([type isEqualToString:@"no"]){
         
-       // [self customAlert:[NSString stringWithFormat:@"%@", [[notification objectForKey:@"aps"] valueForKey:@"alert"]] withDone:@"Ok" withColor:NO withTag:0];
-        
     } else if([type isEqualToString:@"postRequested"] || [type isEqualToString:@"respondedToRequest"]){
         
-      //  [self refreshMapPins];
-        
     }
+
+    UIAlertView *newAlertVw = [[UIAlertView alloc] initWithTitle:title message:theMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [newAlertVw show];
+    
+    [self refreshData];
     
 }
 
@@ -567,342 +616,4 @@
 
 
 
-//       NSLog(@"count 1 = %lu", count);
-//convert NSArray of id <MKAnnotation> into an MKCoordinateRegion that can be used to set the map size
-//can't use NSArray with MKMapPoint because MKMapPoint is not an id
-//    count=0;
-//    for(int i=0; i<[usersToTrack count]; i++)
-//        if([[NSUserDefaults standardUserDefaults] boolForKey:[[usersToTrack objectAtIndex:i] udid]] == 1)
-//            count++;
-//        NSLog(@"count 2 = %lu", count);
-//
-//    if ( count == 0) { return; } //bail if no annotations
-//    MKMapPoint points[count]; //C array of MKMapPoint struct
-//    for( int i=0; i<count; i++ ) //load points C array by converting coordinates to points
-//    {
-//      //  CLLocationCoordinate2D coordinate = [(id <MKAnnotation>)[annotations objectAtIndex:i] coordinate];
-//        CLLocationCoordinate2D coordinate = [(id <MKAnnotation>)[annotations objectAtIndex:i] coordinate];
-//        if ([(id <MKAnnotation>)[annotations objectAtIndex:i] isKindOfClass:[Pin class]])
-//            NSLog(@"Clicked a=%@", ((Pin *)(id <MKAnnotation>)[annotations objectAtIndex:i]).udid);
-//        if([[NSUserDefaults standardUserDefaults] boolForKey:[[usersToTrack objectAtIndex:i] udid]] == 1){
-//            points[i] = MKMapPointForCoordinate(coordinate);
-//            NSLog(@"%i %f, %f", i, coordinate.latitude, coordinate.longitude);
-//        }
 
-//    }
-//        NSLog(@"1111");
-//        NSMutableArray *zoomPins;
-//        zoomPins = [[NSMutableArray alloc] init];
-//        for( int i=0; i<count; i++ ){
-//            Pin * pointx = [[Pin alloc] init];
-//            pointx = ((Pin *)(id <MKAnnotation>)[annotations objectAtIndex:i]);
-//           // if([[NSUserDefaults standardUserDefaults] boolForKey:[pointx udid]] == 1)
-//                [zoomPins addObject:pointx];
-//            }
-//
-//        NSLog(@"2222");
-//        if(zoomPins.count==0)return;
-//        count = zoomPins.count;
-//        MKMapPoint points[count];
-//        for( int i=0; i<count; i++ ){
-//            points[i] = MKMapPointForCoordinate([[zoomPins objectAtIndex:i] coordinates]);
-//             NSLog(@"%i %f, %f", i, [[zoomPins objectAtIndex:i] coordinates].latitude, [[zoomPins objectAtIndex:i] coordinates].longitude);
-//        }
-
-
-
-//**************************************************************************************
-/*
- #define MINIMUM_ZOOM_ARC 0.014 //approximately 1 miles (1 degree of arc ~= 69 miles)
- #define ANNOTATION_REGION_PAD_FACTOR 1.15
- #define MAX_DEGREES_ARC 360
- //size the mapView region to fit its annotations
- - (void)zoomMapViewToFitAnnotations{
- 
- //    NSArray *annotations = self.mapView.annotations;
- //    unsigned long count = [self.mapView.annotations count];
- //    if ( count == 0) { return; } //bail if no annotations
- 
- //    unsigned long count = [usersToTrack count];
- //    if ( count == 0) { return; } //bail if no annotations
- //
- //    count = 0;
- unsigned long count = 0;
- for(int i=0; i<[usersToTrack count]; i++)
- if([[NSUserDefaults standardUserDefaults] boolForKey:[[usersToTrack objectAtIndex:i] udid]] == 1)
- count++;
- NSLog(@"number of points to focus on = %lu", count);
- 
- if ( count == 0) { return; } //bail if no annotations
- 
- //    CLLocationCoordinate2D *points = malloc([mutablePoints count] * sizeof(CLLocationCoordinate2D));
- //    for(int i = 0; i < [mutablePoints count]; i++) {
- //        [[mutablePoints objectAtIndex:i] getValue:(points + i)];
- //    }
- 
- MKMapPoint points[count]; //C array of MKMapPoint struct
- for( int i=0; i<count; i++ ) {//load points C array by converting coordinates to points
- //CLLocationCoordinate2D coordinate = [(id <MKAnnotation>)[annotations objectAtIndex:i] coordinate];
- if([[NSUserDefaults standardUserDefaults] boolForKey:[[usersToTrack objectAtIndex:i] udid]] == 1){
- UserInfo *user = [[UserInfo alloc] init];
- user = [usersToTrack objectAtIndex:i];
- CLLocationCoordinate2D coordinate = user.coordinates;
- points[i] = MKMapPointForCoordinate(coordinate);
- user = nil;
- }
- }
- 
- 
- //    NSMutableArray *mpoints;
- //    if(!mpoints) mpoints = [[NSMutableArray alloc] init];
- //    for(int i=0; i<[usersToTrack count]; i++){
- //        if([[NSUserDefaults standardUserDefaults] boolForKey:[[usersToTrack objectAtIndex:i] udid]] == 1)
- //            [mpoints addObject: [NSValue valueWithMKCoordinate:[[usersToTrack objectAtIndex:i] coordinates]]];
- //    }
- //    unsigned long count = mpoints.count;
- //
- //    NSArr points = [mpoints copy];
- 
- //create MKMapRect from array of MKMapPoint
- MKMapRect mapRect = [[MKPolygon polygonWithPoints:points count:count] boundingMapRect];
- //convert MKCoordinateRegion from MKMapRect
- MKCoordinateRegion region = MKCoordinateRegionForMapRect(mapRect);
- 
- //add padding so pins aren't scrunched on the edges
- region.span.latitudeDelta  *= ANNOTATION_REGION_PAD_FACTOR;
- region.span.longitudeDelta *= ANNOTATION_REGION_PAD_FACTOR;
- //but padding can't be bigger than the world
- if( region.span.latitudeDelta > MAX_DEGREES_ARC ) { region.span.latitudeDelta  = MAX_DEGREES_ARC; }
- if( region.span.longitudeDelta > MAX_DEGREES_ARC ){ region.span.longitudeDelta = MAX_DEGREES_ARC; }
- 
- //and don't zoom in stupid-close on small samples
- if( region.span.latitudeDelta  < MINIMUM_ZOOM_ARC ) { region.span.latitudeDelta  = MINIMUM_ZOOM_ARC; }
- if( region.span.longitudeDelta < MINIMUM_ZOOM_ARC ) { region.span.longitudeDelta = MINIMUM_ZOOM_ARC; }
- //and if there is a sample of 1 we want the max zoom-in instead of max zoom-out
- if( count == 1 )
- {
- region.span.latitudeDelta = MINIMUM_ZOOM_ARC;
- region.span.longitudeDelta = MINIMUM_ZOOM_ARC;
- }
- [self.mapView setRegion:region animated:YES];
- 
- }
- 
- 
- 
- 
- 
- NSString *rawText = @"One Broadway, Cambridge, MA";
- NSString *encodedText = [rawText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
- NSLog(@"Encoded text: %@", encodedText);
- NSString *decodedText = [encodedText stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
- NSLog(@"Original text: %@", decodedText);
- 
- 
- 
- */
-
-/*
- // **************************************************************************************
- - (void) updateUserLocation:(NSMutableArray *)locations
- {
- //NSLog(@"updateUserLocation");
- // Remove all previous annotations.
- [self.mapView removeAnnotations:self.mapView.annotations];
- 
- NSLog(@"update : count = %lu",(unsigned long)[locations count]);
- //add annotations
- for(int i=0; i<[locations count]; i++){
- if([[NSUserDefaults standardUserDefaults] boolForKey:[[locations objectAtIndex:i] udid]] == 0)
- continue;
- Pin * point= [[Pin alloc] init];
- point.udid = [[locations objectAtIndex:i] udid];
- point.coordinate = [[locations objectAtIndex:i] coordinates];
- point.title = [[[locations objectAtIndex:i] username] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
- point.shouldZoom = YES;
- // Calculate distance to yourself
- CLLocationCoordinate2D pointACoordinate = [[locations objectAtIndex:i] coordinates];
- CLLocation *pointALocation = [[CLLocation alloc] initWithLatitude:pointACoordinate.latitude longitude:pointACoordinate.longitude];
- CLLocationCoordinate2D pointBCoordinate = [[locations objectAtIndex:0] coordinates];
- CLLocation *pointBLocation = [[CLLocation alloc] initWithLatitude:pointBCoordinate.latitude longitude:pointBCoordinate.longitude];
- double distanceMeters = [pointALocation distanceFromLocation:pointBLocation];
- double distanceMiles = (distanceMeters / 1609.344);
- double distanceFeet = (distanceMeters * 3.28084);
- if(distanceMeters>1610.)  //if less than a mile
- point.subtitle = [NSString stringWithFormat:@"%.2f miles or %.2f km", distanceMiles, distanceMeters/1000.];
- else
- point.subtitle = [NSString stringWithFormat:@"%.2f ft or %.2f m", distanceFeet, distanceMeters];
- if(i==0)continue;  //no pin on yourself
- [self.mapView addAnnotation:point];
- point = nil;
- }
- 
- //zoom all
- [self zoomMapViewToFitAnnotations];
- 
- }
- */
-
-//// **************************************************************************************
-//- (void)viewWillDisappear:(BOOL)animated {
-//    [super viewWillDisappear:animated];
-//}
-//
-//// **************************************************************************************
-//- (void)viewDidDisappear:(BOOL)animated {
-//    [super viewDidDisappear:(BOOL)animated];
-//}
-//
-//// **************************************************************************************
-//- (void)viewDidAppear:(BOOL)animated {
-//    [super viewDidAppear:animated];
-//
-//    //We are now visible
-////    [self refreshData];
-//}
-//
-//// **************************************************************************************
-//- (void)viewWillAppear:(BOOL)animated
-//{
-//  //  [[LocationManagerSingleton sharedLocationInstance].myLocationManager startUpdatingLocation];
-//}
-
-
-
-// **************************************************************************************
-//- (void) getAPIData:(CLLocation *)location
-//{
-//    CLLocation *userLocation = [[LocationManagerSingleton sharedLocationInstance].myLocationManager location];
-//}
-//////////////////////////////////////
-
-//Location Manager
-//**************************************************************************************
-//**************************************************************************************
-
-
-
-
-/*
- 
- - (BOOL) enableLocationServices {
- 
- if ([CLLocationManager locationServicesEnabled]) {
- self.locationManager.distanceFilter = 10;
- self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
- [self.locationManager startUpdatingLocation];
- [self.mapView setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
- return YES;
- } else {
- return NO;
- }
- }
- 
- 
- // **************************************************************************************
- 
- - (void) setupLocationManager {
- self.locationManager = [[CLLocationManager alloc] init];
- self.locationManager.delegate = self;
- 
- // Will call locationManager:didChangeAuthorizationStatus: delegate method
- [CLLocationManager authorizationStatus];
- }
- 
- 
- - (void) locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
- 
- NSString *message = @"You must enable Location Services for this app in order to use it.";
- NSString *button = @"Ok";
- NSString *title;
- 
- if (status == kCLAuthorizationStatusDenied) {
- title = @"Location Services Disabled";
- [[[UIAlertView alloc] initWithTitle:title
- message:message
- delegate:self
- cancelButtonTitle:nil
- otherButtonTitles:button, nil] show];
- } else if(status == kCLAuthorizationStatusRestricted) {
- title = @"Location Services Restricted";
- [[[UIAlertView alloc] initWithTitle:title
- message:message
- delegate:self
- cancelButtonTitle:nil
- otherButtonTitles:button, nil] show];
- } else if (status == kCLAuthorizationStatusAuthorizedWhenInUse) {
- // Note: kCLAuthorizationStatusAuthorizedWhenInUse depends on the request...Authorization
- // (Always or WhenInUse)
- if ([self enableLocationServices]) {
- NSLog(@"Location Services enabled.");
- self.user.coordinates = self.locationManager.location.coordinate;
- } else {
- NSLog(@"Couldn't enable Location Services. Please enable them in Settings > Privacy > Location Services.");
- }
- } else if (status == kCLAuthorizationStatusNotDetermined) {
- NSLog(@"Error : Authorization status not determined.");
- [self.locationManager requestWhenInUseAuthorization];
- }
- }
- 
- // **************************************************************************************
- 
- - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
- 
- CLLocation * newLocation = [locations lastObject];
- 
- if(!updatedLocation && ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse ||
- [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways) &&
- newLocation.horizontalAccuracy <= 65.0f &&
- newLocation.coordinate.latitude != 0.0 &&
- newLocation.coordinate.longitude != 0.0){
- 
- updatedLocation = false;
- 
- CLLocationCoordinate2D coordinate;
- coordinate.latitude = newLocation.coordinate.latitude;
- coordinate.longitude = newLocation.coordinate.longitude;
- MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(coordinate, METERS_PER_MILE, METERS_PER_MILE);
- 
- [self.mapView setRegion:viewRegion animated:NO];
- self.mapView.showsUserLocation = YES;
- 
- }
- 
- }
- 
- // **************************************************************************************
- 
- - (void)locationManagerDidPauseLocationUpdates:(CLLocationManager *)manager {
- 
- [self.user setUserSpeed:0.0f];
- 
- }
- 
- //if user has disabled location services, show alert
- // **************************************************************************************
- 
- - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
- 
- if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied){
- UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Enable Location Services" message:@"To use King, location services must be enabled within Settings" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
- [alertView show];
- }
- }
- */
-// **************************************************************************************
-// **************************************************************************************
-//- (void)showPins
-//{
-//
-//    if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-//
-//        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Enable Location Services" message:@"To use Zing, location services must be enabled within Settings" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
-//        [alertView show];
-//
-//    } else if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse ||
-//              [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways) {
-//
-//        [self zoomMapViewToFitAnnotations];
-//    }
-//}

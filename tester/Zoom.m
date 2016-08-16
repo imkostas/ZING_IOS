@@ -7,20 +7,18 @@
 //
 
 #import "Zoom.h"
-#import "SWRevealViewController.h"
 
 @interface Zoom () {
    
-    BOOL value;
-    NSMutableDictionary *zdic;
+    BOOL switchStatus;
+    BOOL gotAllLocations;
+    BOOL gotIndex;
     UIActivityIndicatorView *spinner;
 }
 
 @end
 
-@implementation Zoom
-
-{
+@implementation Zoom {
     
 }
 
@@ -29,85 +27,103 @@
     
     [super viewDidLoad];
     
-    SWRevealViewController *revealViewController = self.revealViewController;
-    if ( revealViewController )
-    {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector( revealToggle: )];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
     
     //initialize user info
     self.user = [UserInfo user];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUsersToTrack) name:@"GetAllLocations" object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshPairs) name:@"CreatePair" object:nil];
+    
+    // Get data from the server
+    [self refreshData];
+    
+    
+    //initialize Spinner
     spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     spinner.center = CGPointMake(160, 240);
     spinner.hidesWhenStopped = YES;
     [self.view addSubview:spinner];
     [spinner startAnimating];
 
-    self.user.pairs = [[GlobalData shared] GetAllLocations:self.user.udid];
 
-    
-    // Initialize the refresh control.
+
+    // Initialize the refresh control
     self.refreshControl = [[UIRefreshControl alloc] init];
     self.refreshControl.backgroundColor = [UIColor whiteColor];
     self.refreshControl.tintColor = [UIColor blackColor];
-    [self.refreshControl addTarget:self
-                            action:@selector(getUsersToTrack)
-                  forControlEvents:UIControlEventValueChanged];
+    [self.refreshControl addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
 
 }
 
-//******************************************************************
+// ******************************************************************
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self.tableView reloadData];
 }
 
-//******************************************************************
+// ******************************************************************
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 }
 
-//******************************************************************
+// ******************************************************************
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:(BOOL)animated];
+    
+    //remove notification observer for data (will be initialized next time screen is loaded)
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"GetAllLocations" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"GetIndex" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CreatePair" object:nil];
+    
 
 }
-//******************************************************************
+// ******************************************************************
 - (void)didReceiveMemoryWarning {
     
     [super didReceiveMemoryWarning];
     
 }
 
+// ******************************************************************
+-(void) getUsersToTrack {
 
-//******************************************************************
--(void) getUsersToTrack{
+        [spinner stopAnimating];
+        [self.tableView reloadData];
+        [self.refreshControl endRefreshing];
     
- //   self.user.pairs = [[GlobalData shared] GetAllLocations:self.user.udid];
-
-    [spinner stopAnimating];
-    [self.tableView reloadData];
-    [self.refreshControl endRefreshing];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"GetAllLocations" object:nil];
+}
+// ******************************************************************
+-(void) refreshData {
     
+    //notifcation to keep track of when data is loaded
+    gotIndex        = false;
+    gotAllLocations = false;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUsersToTrack) name:@"GetAllLocations" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getUsersToTrack) name:@"GetIndex" object:nil];
+    
+    // The most important: init and read the data
+    self.user.pairs = [[GlobalData shared] GetAllLocations:self.user.udid];
+    self.index = [[NSMutableArray alloc] init];
+    self.index = [[GlobalData shared] GetIndex:self.user.udid];
     
 }
 
-//******************************************************************
+// *****************************
+-(void) refreshPairs{
+    
+  //  [self refreshData];
+}
+
+// ****************************************************************** RESET
 - (IBAction)buttonPressed:(UIButton *)sender
 {
     for(int i=0; i<[self.user.pairs count]; i++)
-        value = [[NSUserDefaults standardUserDefaults] boolForKey:[[self.user.pairs objectAtIndex:i] udid]];
+        switchStatus = [[NSUserDefaults standardUserDefaults] boolForKey:[[self.user.pairs objectAtIndex:i] udid]];
     [self.tableView reloadData];
 }
 
-//******************************************************************
+// ******************************************************************
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
     //only one section is needed
@@ -115,7 +131,7 @@
     
 }
 
-//******************************************************************
+// ******************************************************************
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     //height for custom cell
@@ -123,8 +139,15 @@
     
 }
 
-
 //******************************************************************
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    return [self.index count];
+}
+
+
+
+// ******************************************************************
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
@@ -135,34 +158,55 @@
     if (cell == nil) {
         cell = [[ZoomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
+  
+    Location *selectedPerson = [[Location alloc] init];
+    selectedPerson = [self.index objectAtIndex:indexPath.row];
+
+    BOOL active = false;
+    for(int i=0; i<self.user.pairs.count; i++)
+        if([[selectedPerson udid] isEqualToString:[[self.user.pairs objectAtIndex:i] udid]])
+            active=true;
     
-    // Display user in the table cell
-    Location *location = [[Location alloc] init];
-    
-    location = [self.user.pairs objectAtIndex:indexPath.row];
-    cell.name.text = [location.username stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];  //]NSASCIIStringEncoding];
-                    CLLocationCoordinate2D pointACoordinate = [location coordinates];
-                    CLLocation *pointALocation = [[CLLocation alloc] initWithLatitude:pointACoordinate.latitude longitude:pointACoordinate.longitude];
-                    CLLocationCoordinate2D pointBCoordinate = self.user.coordinates;
-                    CLLocation *pointBLocation = [[CLLocation alloc] initWithLatitude:pointBCoordinate.latitude longitude:pointBCoordinate.longitude];
-                    double distanceMeters = [pointALocation distanceFromLocation:pointBLocation];
-                    double distanceMiles = (distanceMeters / 1609.344);
-                    double distanceFeet = (distanceMeters * 3.28084);
-    if(indexPath.row>0){
-        if(distanceMeters>1610.)
-            cell.distance.text = [NSString stringWithFormat:@"%.2f miles/%.2f km", distanceMiles, distanceMeters/1000.];
-        else
-            cell.distance.text = [NSString stringWithFormat:@"%.2f ft or %.2f m", distanceFeet, distanceMeters];
+     if([[selectedPerson udid] isEqualToString:self.user.udid])
+         active=true;
+
+    if(!active){
+        //Candidate names
+        cell.name.textColor = [UIColor lightGrayColor];
+        cell.name.text = selectedPerson.username;
+        cell.distance.text = @"Click to add";
+        [cell.isZoomedSwitch setHidden:true];
     }
-        BOOL zoomValue = [[NSUserDefaults standardUserDefaults] boolForKey:[[self.user.pairs objectAtIndex:indexPath.row] udid]];
+    else{
+        //Name
+        cell.name.textColor = [UIColor blackColor];
+        cell.name.text = [selectedPerson.username stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        //Distance
+        CLLocationCoordinate2D pointACoordinate = [selectedPerson coordinates];
+       // NSLog(@"%f" , [selectedPerson coordinates].latitude);
+        CLLocation *pointALocation = [[CLLocation alloc] initWithLatitude:pointACoordinate.latitude longitude:pointACoordinate.longitude];
+        CLLocationCoordinate2D pointBCoordinate = [LocationManagerSingleton sharedLocationInstance].myLocationManager.location.coordinate;
+        CLLocation *pointBLocation = [[CLLocation alloc] initWithLatitude:pointBCoordinate.latitude longitude:pointBCoordinate.longitude];
+        double distanceMeters = [pointALocation distanceFromLocation:pointBLocation];
+        double distanceMiles = (distanceMeters / 1609.344);
+        double distanceFeet = (distanceMeters * 3.28084);
+        if(indexPath.row>0){
+            if(distanceMeters>1610.)
+                cell.distance.text = [NSString stringWithFormat:@"%.2f miles/%.2f km", distanceMiles, distanceMeters/1000.];
+            else
+                cell.distance.text = [NSString stringWithFormat:@"%.2f ft or %.2f m", distanceFeet, distanceMeters];
+            [cell.isZoomedSwitch setHidden:false];
+        }
+        //Zoom button
+        BOOL zoomValue = [[NSUserDefaults standardUserDefaults] boolForKey:[[self.index objectAtIndex:indexPath.row] udid]];
         [cell.isZoomedSwitch setOn: zoomValue];
-    
-    [cell.isZoomedSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+        [cell.isZoomedSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+    }
 
     return cell;
 }
 
-//*******************************<<<<<<<<<<<<<<<
+// *******************************<<<<<<<<<<<<<<<
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
@@ -170,49 +214,149 @@
     [cell.isZoomedSwitch setOn:!cell.isZoomedSwitch.on animated:YES];
     
     Location *location = [[Location alloc] init];
-    location = [self.user.pairs objectAtIndex:indexPath.row];
-    [self switchChanged:cell.isZoomedSwitch];
-    [[NSUserDefaults standardUserDefaults] setBool:value forKey:location.udid];
-//    NSLog(@"%lu username = %@ value = %i", indexPath.row, [self.user username], value);
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    //CHeck if user selects all zooms off
-    int noZooms = 0;
-    for(int i=0; i<self.user.pairs.count; i++)
-        if([[NSUserDefaults standardUserDefaults] boolForKey:[[self.user.pairs objectAtIndex:i] udid]]==1)
-            noZooms++;
-    if(noZooms==0){
-        value = true;
-        [[NSUserDefaults standardUserDefaults] setBool:value forKey:location.udid];
+    location = [self.index objectAtIndex:indexPath.row];
+
+    //NSLog(@"------  isZoomedSwitch is %i", cell.isZoomedSwitch.isOn);
+    
+        
+    if([cell.isZoomedSwitch isHidden])
+    {
+        
+        if([location.udid isEqualToString:self.user.udid]){
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Sorry" message:@"You can't connect with yourself" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alertView show];
+        }
+        else{
+            [[GlobalData shared] CreatePair:self.user.udid and:location.udid];
+            [self refreshData];
+        }
+
+    }
+    else{
+        NSLog(@"CEll is visible");
+        if(cell.isZoomedSwitch.isOn){
+//            [[GlobalData shared] CreatePair:self.user.udid and:location.udid];
+//            [self refreshData];
+        }
+        else{
+//            [[GlobalData shared] RemovePair:self.user.udid and:location.udid];
+//            [self refreshData];
+        }
+        
+        [self switchChanged:cell.isZoomedSwitch];
+        [[NSUserDefaults standardUserDefaults] setBool:switchStatus forKey:location.udid];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [cell.isZoomedSwitch setOn:value animated:YES];
-        return;
     }
 
 
 }
 
-//*******************************
+// *******************************
 -(void) switchChanged:(id)sender {
     UISwitch* switcher = (UISwitch*)sender;
-    value = switcher.on;
+    switchStatus = switcher.on;
 }
 
 
 
-//******************************************************************
+// ******************************************************************
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    return false;
+    ZoomCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
+    if([selectedCell.isZoomedSwitch isHidden])
+        return false;
+    else
+        return true;
     
 }
 
-//******************************************************************
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.user.pairs count];
+// ****************************************************************
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        self.indexPathToBeDeleted = indexPath;
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"UNPAIR USER?"
+                                                        message:@"You can always pair again later"
+                                                       delegate:self
+                                              cancelButtonTitle:@"NO"
+                                              otherButtonTitles:@"YES", nil];
+        [alert show];
+    }
+
+}
+
+// ****************************************************************
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
+    if([title isEqualToString:@"NO"])
+    {
+        [self.tableView reloadData];
+    }
+    else if([title isEqualToString:@"YES"])
+    {
+        //add code here for when you hit delete
+        Location *location = [[Location alloc] init];
+        location = [self.index objectAtIndex:self.indexPathToBeDeleted.row];
+        [[GlobalData shared] RemovePair:self.user.udid and:location.udid];
+        [[GlobalData shared] sendAPNS: self.user.username withUDID: location.udid withMessage:[NSString stringWithFormat:@"%@ has unpaired you", self.user.username] andIdentification:@"RemovePair"];
+
+
+        // delete cell
+        [self.index removeObjectAtIndex:[self.indexPathToBeDeleted row]];
+        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:self.indexPathToBeDeleted] withRowAnimation:UITableViewRowAnimationFade];
+        
+        [self refreshData];
+    }
 }
 
 
-
-
-
 @end
+
+
+
+
+
+//    Location *location = [[Location alloc] init];
+//
+//    location = [self.user.pairs objectAtIndex:indexPath.row];
+//    cell.name.text = [location.username stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];  //]NSASCIIStringEncoding];
+//                    CLLocationCoordinate2D pointACoordinate = [location coordinates];
+//                    CLLocation *pointALocation = [[CLLocation alloc] initWithLatitude:pointACoordinate.latitude longitude:pointACoordinate.longitude];
+//                    CLLocationCoordinate2D pointBCoordinate = self.user.coordinates;
+//                    CLLocation *pointBLocation = [[CLLocation alloc] initWithLatitude:pointBCoordinate.latitude longitude:pointBCoordinate.longitude];
+//                    double distanceMeters = [pointALocation distanceFromLocation:pointBLocation];
+//                    double distanceMiles = (distanceMeters / 1609.344);
+//                    double distanceFeet = (distanceMeters * 3.28084);
+//    if(indexPath.row>0){
+//        if(distanceMeters>1610.)
+//            cell.distance.text = [NSString stringWithFormat:@"%.2f miles/%.2f km", distanceMiles, distanceMeters/1000.];
+//        else
+//            cell.distance.text = [NSString stringWithFormat:@"%.2f ft or %.2f m", distanceFeet, distanceMeters];
+//    }
+//        BOOL zoomValue = [[NSUserDefaults standardUserDefaults] boolForKey:[[self.user.pairs objectAtIndex:indexPath.row] udid]];
+//        [cell.isZoomedSwitch setOn: zoomValue];
+//
+//    [cell.isZoomedSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+
+
+
+
+//    [self switchChanged:cell.isZoomedSwitch];
+//    [[NSUserDefaults standardUserDefaults] setBool:value forKey:location.udid];
+//    NSLog(@"%lu username = %@ value = %i", indexPath.row, [self.user username], value);
+//    [[NSUserDefaults standardUserDefaults] synchronize];
+//CHeck if user selects all zooms off
+//    int noZooms = 0;
+//    for(int i=0; i<self.user.pairs.count; i++)
+//        if([[NSUserDefaults standardUserDefaults] boolForKey:[[self.user.pairs objectAtIndex:i] udid]]==1)
+//            noZooms++;
+//    if(noZooms==0){
+//        value = true;
+//        [[NSUserDefaults standardUserDefaults] setBool:value forKey:location.udid];
+//        [[NSUserDefaults standardUserDefaults] synchronize];
+//        [cell.isZoomedSwitch setOn:value animated:YES];
+//        return;
+//    }
+

@@ -106,7 +106,9 @@
         geocoding_uri = @"https://maps.googleapis.com/maps/api/geocode/json?address=";
         
         //initialize user profile info
-        username = [[[UIDevice currentDevice] name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
+        //username = [[[UIDevice currentDevice] name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
+        username = [[UIDevice currentDevice] name] ;
+
                 email = @"";
         profileImage = nil;
         userSpeed = 0.0f;

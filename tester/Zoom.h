@@ -20,4 +20,6 @@
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 
+@property (strong, nonatomic) NSIndexPath *indexPathToBeDeleted;
+@property (nonatomic, strong) NSMutableArray *index;
 @end

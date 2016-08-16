@@ -50,7 +50,8 @@
     }
     
     
-
+    //clear application's badges...but should do elsewhere
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 
     
     return YES;
@@ -92,7 +93,10 @@
 //**************************************************************************************//
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    //clear application's badges...but should do elsewhere//test IOS
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    
 }
 
 //**************************************************************************************//
@@ -152,55 +156,45 @@
     
     NSLog(@"didReceiveLocalNotification");
     
-    //local notification - testing functionality, might use later
-    if(application.applicationState == UIApplicationStateActive){
-        
-        //indicate push has been received
-        [self.user receivedNotification:notification.userInfo withType:[NSString stringWithFormat:@"%@", [notification.userInfo objectForKey:@"id"]]];
-        
-    }
+//    //local notification - testing functionality, might use later
+//    if(application.applicationState == UIApplicationStateActive){
+//        
+//        //indicate push has been received
+//        [self.user receivedNotification:notification.userInfo withType:[NSString stringWithFormat:@"%@", [notification.userInfo objectForKey:@"id"]]];
+//    }
     
 }
-
-
 
 // **************************************************************************************
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)info {
     
     NSLog(@"%@", info);
-    NSLog(@"didReceiveRemoteNotification");
+    NSLog(@"didReceiveRemoteNotification %ld %ld", (long)[UIApplication sharedApplication].applicationState,
+          (long)UIApplicationStateInactive);
     
     //if application is active, show specific alert/message
-    if(application.applicationState == UIApplicationStateActive){
+    if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
 
         //push types
         if([[info objectForKey:@"id"]  isEqualToString:@"request"]){
-            
-            //Can we connect? Please?
              [self.user receivedNotification:info withType:@"request"];
-        
         } else if([[info objectForKey:@"id"]  isEqualToString:@"yes"]) {
-            
-            //YES
              [self.user receivedNotification:info withType:@"yes"];
-            
-            
         } else if([[info objectForKey:@"id"]  isEqualToString:@"no"]) {
-            
-            //NO
              [self.user receivedNotification:info withType:@"no"];
-            
-        }else if([[info objectForKey:@"id"]  isEqualToString:@"silent"]) {
-            
+        } else if([[info objectForKey:@"id"]  isEqualToString:@"RemovePair"]) {
+            [self.user receivedNotification:info withType:@"RemovePair"];
+        } else if([[info objectForKey:@"id"]  isEqualToString:@"CreatePair"]) {
+            [self.user receivedNotification:info withType:@"CreatePair"];
+        }
+        else if([[info objectForKey:@"id"]  isEqualToString:@"silent"]) {
             //SILENT
             NSLog(@"SILENT");
-            
-            
         }
     }
 
-    else if(application.applicationState == UIApplicationStateBackground) {
+    else if([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
         
         NSLog(@"UIApplicationStateBackground");
         
@@ -214,19 +208,19 @@
         
         NSLog(@"Creating local notification");
 //        
-//        UILocalNotification *notification = [[UILocalNotification alloc] init];
-//        notification.timeZone = [NSTimeZone localTimeZone];
-//        notification.alertBody = NSLocalizedString([info objectForKey:@"alert"] , nil);
-//        notification.alertAction = NSLocalizedString(@"Take Action", nil);
-//        notification.soundName = UILocalNotificationDefaultSoundName;
-//        notification.applicationIconBadgeNumber = 1;
-//        NSDictionary *infoDict = [NSDictionary dictionaryWithObject:[info objectForKey:@"id"] forKey:@"id"];
-//        notification.userInfo = infoDict;
-//        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-            
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        notification.timeZone = [NSTimeZone localTimeZone];
+        notification.alertBody = NSLocalizedString([info objectForKey:@"alert"] , nil);
+        notification.alertAction = NSLocalizedString(@"Take Action", nil);
+        notification.soundName = UILocalNotificationDefaultSoundName;
+        notification.applicationIconBadgeNumber++;
+        NSDictionary *infoDict = [NSDictionary dictionaryWithObject:[info objectForKey:@"id"] forKey:@"id"];
+        notification.userInfo = infoDict;
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        
         }
         
-    } else if (application.applicationState == UIApplicationStateInactive) {
+    } else if ([UIApplication sharedApplication].applicationState == UIApplicationStateInactive) {
         
         NSLog(@"App Inactive");
     }
@@ -234,70 +228,8 @@
 }
 
 
-// **************************************************************************************
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if([[alertView buttonTitleAtIndex:buttonIndex]isEqual:@"ZING"]) {  //YES
-        [self sendAPNS:self.user for:@"yes"];
-    }
-    else if([[alertView buttonTitleAtIndex:buttonIndex]isEqual:@"NOT NOW"]) {  //NO
-        [self sendAPNS:self.user for:@"no"];
-    }
-    else if([[alertView buttonTitleAtIndex:buttonIndex]isEqual:@"GOOD"]) {  //
-        ;
-    }
-    else if([[alertView buttonTitleAtIndex:buttonIndex]isEqual:@"OH WELL"]) {  //
-        ;
-    }
-    
-}
 
 
-//**************************************************************************************
-
-- (void)sendAPNS:(UserInfo*)myContact for:(NSString *)id{
-    
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    
-
-    NSString *emessage;
-    NSString *eusername = [myContact.username stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    
-    if([id isEqualToString:@"yes"]){
-        emessage = [[NSString stringWithFormat:@"%@ allows to zing with you", [myContact.username stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    }
-    else if([id isEqualToString:@"no"]){
-         emessage = [[NSString stringWithFormat:@"%@ allows to zing with you", [myContact.username stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        
-    }
-    else{
-        emessage = @"";
-    }
-//    NSString *username = myContact.username;
-//    NSString *eusername = [username stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//    
-//    NSString *message =  [NSString stringWithFormat:@"%@ wants to zing with you", myContact.username];
-//    NSString *emessage = [message stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    
-    [request setURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@notification/%@&%@&%@&request",  self.user.uri, eusername, myContact.udid, emessage ]]];
-    NSLog(@"notification %@", request.URL);
-    
-    [request setHTTPMethod:@"GET"];
-    
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-    [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (!error) {
-            NSString *requestReply = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-            NSLog(@"set requestReply: %@", requestReply);
-        } else {
-            NSLog(@"error : %@", error.description);
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Error Connecting to Server" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alertView show];
-        }
-    }] resume];
-    
-}
 
 
 - (void)batteryStateDidChange:(NSNotification *)notification

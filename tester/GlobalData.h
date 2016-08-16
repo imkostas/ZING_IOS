@@ -32,7 +32,6 @@
 - (void) RemovePair:(NSString *) udid1 and:(NSString *) udid2;
 - (NSMutableArray *) GetAllLocations:(NSString *)udid;
 - (NSMutableArray *) GetIndex:(NSString *)udid;
-- (void)sendAPNS:(NSString*)udid withMessage:(NSString *)theMessage andIdentification: (NSString *)identification;
-- (void)sendSMS:(NSString*)phone withMessage:(NSString *)theMessage;
+- (void)sendAPNS:(NSString *)username withUDID: (NSString*)udid withMessage:(NSString *)theMessage andIdentification: (NSString *)identification;
 
 @end

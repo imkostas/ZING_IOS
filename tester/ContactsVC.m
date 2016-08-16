@@ -8,7 +8,6 @@
 
 #import "ContactsVC.h"
 #import "Contact.h"
-#import "SWRevealViewController.h"
 
 @interface ContactsVC ()
 
@@ -39,13 +38,7 @@
     self.user = [UserInfo user];
     
     
-    SWRevealViewController *revealViewController = self.revealViewController;
-    if ( revealViewController )
-    {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector( revealToggle: )];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
+
     
     // Request authorization to Address Book
     ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, NULL);
@@ -139,13 +132,12 @@
     } else {
         contact = [contacts objectAtIndex:indexPath.row];
     }
-//    UIAlertView * alert =[[UIAlertView alloc ] initWithTitle:contact.name message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
-//    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
-//    [alert addButtonWithTitle:@"Call"];
-//    UITextField* textField = [alert textFieldAtIndex:0];
-//    textField.text =contact.phone;
-//    [alert show];
-    [self sendAPNS:contact];
+    UIAlertView * alert =[[UIAlertView alloc ] initWithTitle:contact.name message:@"Send an invitation to get Zing" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
+    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    [alert addButtonWithTitle:@"Send"];
+    UITextField* textField = [alert textFieldAtIndex:0];
+    textField.text =contact.phone;
+    [alert show];
     
 }
 
@@ -153,15 +145,10 @@
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    if (buttonIndex == 1) {  //Call
+    if (buttonIndex == 1) {  //Send
         UITextField *phone = [alertView textFieldAtIndex:0];
         NSLog(@"phone: %@", [phone.text isEqualToString:(@"")]?contact.phone:phone.text);
-//        ContactsVC *view = [self.storyboard instantiateViewControllerWithIdentifier:@"Map"];
-//        [self presentViewController:view animated:YES completion:nil];
-        
-        [[self navigationController] popViewControllerAnimated:YES];
-
-
+        [self sendSMS:contact];
 
     }
 }

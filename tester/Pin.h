@@ -11,11 +11,14 @@
 
 @interface Pin : MKPointAnnotation
 
+
 //cell for displaying previously searched locations or search results based on search string
 @property (strong, nonatomic) NSString *name; //displays main address
 @property (strong, nonatomic) NSString *distance; //displays city, region, country
 @property (nonatomic) CLLocationCoordinate2D coordinates;
 @property (nonatomic, strong) NSString *udid;
 @property (nonatomic) BOOL shouldZoom;
+@property (nonatomic, strong) UIImage *circleImage;  //pin image
+@property (strong, nonatomic) NSString *nameInitial; //displays name's initial on pin
 
 @end
