@@ -9,7 +9,7 @@
 #import "UserInfo.h"
 #import "Address.h"
 #import "ZoomCell.h"
-#import "ViewController.h"
+#import "Map.h"
 #import "Location.h"
 
 @interface Zoom : UITableViewController <UITableViewDelegate, UITableViewDataSource>

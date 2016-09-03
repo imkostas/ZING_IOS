@@ -12,25 +12,25 @@
 		319471021D335D6200455D60 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 319471001D335D6200455D60 /* CoreGraphics.framework */; };
 		319471031D335D6200455D60 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 319471011D335D6200455D60 /* Foundation.framework */; };
 		319471051D335D7E00455D60 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 319471041D335D7E00455D60 /* UIKit.framework */; };
+		31B371C31D69BDDC00D0D5C7 /* Map.m in Sources */ = {isa = PBXBuildFile; fileRef = 31B371C21D69BDDC00D0D5C7 /* Map.m */; };
+		31B371C61D6A176200D0D5C7 /* Contacts.m in Sources */ = {isa = PBXBuildFile; fileRef = 31B371C51D6A176200D0D5C7 /* Contacts.m */; };
 		31BCA6DA1D4D024D00192666 /* GlobalData.m in Sources */ = {isa = PBXBuildFile; fileRef = 31BCA6D91D4D024D00192666 /* GlobalData.m */; };
 		31BCA6E21D4D158600192666 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 31BCA6E11D4D158600192666 /* Location.m */; };
 		31BCA6E51D4D15BE00192666 /* Pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 31BCA6E41D4D15BE00192666 /* Pair.m */; };
 		31D98F481D230D8500567C9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98F471D230D8500567C9D /* main.m */; };
-		31D98F4E1D230D8500567C9D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98F4D1D230D8500567C9D /* ViewController.m */; };
 		31D98F511D230D8500567C9D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31D98F4F1D230D8500567C9D /* Main.storyboard */; };
 		31D98F561D230D8600567C9D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31D98F541D230D8600567C9D /* LaunchScreen.storyboard */; };
 		31D98F5E1D237FE700567C9D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D98F5D1D237FE700567C9D /* MapKit.framework */; };
 		31D98F661D242BDB00567C9D /* UserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98F651D242BDB00567C9D /* UserInfo.m */; };
 		31D98F961D24E34500567C9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31D98F951D24E34500567C9D /* Assets.xcassets */; };
 		31D98F981D26164600567C9D /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D98F971D26164600567C9D /* AddressBookUI.framework */; };
-		31D98F9D1D26C7F900567C9D /* ContactsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98F9A1D26C7F900567C9D /* ContactsVC.m */; };
 		31D98F9E1D26C7F900567C9D /* ContactsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98F9C1D26C7F900567C9D /* ContactsCell.m */; };
 		31D98FB31D26F45700567C9D /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98FB21D26F45700567C9D /* Contact.m */; };
 		31D98FB51D26F6A300567C9D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98FB41D26F6A300567C9D /* AppDelegate.m */; };
 		31D98FB81D28347200567C9D /* ZoomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98FB71D28347200567C9D /* ZoomCell.m */; };
 		31D98FBC1D28368600567C9D /* Zoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98FBB1D28368600567C9D /* Zoom.m */; };
 		31D98FBF1D283F9D00567C9D /* Address.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98FBE1D283F9D00567C9D /* Address.m */; };
-		31E8CCA01D504B8100723528 /* LocationManagerSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 31E8CC9F1D504B8100723528 /* LocationManagerSingleton.m */; };
+		FDF55B531D783F5700967BEC /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDF55B521D783F5700967BEC /* LocationManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +41,10 @@
 		319471001D335D6200455D60 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		319471011D335D6200455D60 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		319471041D335D7E00455D60 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		31B371C11D69BDDB00D0D5C7 /* Map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Map.h; sourceTree = "<group>"; };
+		31B371C21D69BDDC00D0D5C7 /* Map.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Map.m; sourceTree = "<group>"; };
+		31B371C41D6A176200D0D5C7 /* Contacts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contacts.h; sourceTree = "<group>"; };
+		31B371C51D6A176200D0D5C7 /* Contacts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contacts.m; sourceTree = "<group>"; };
 		31BCA6D81D4D024C00192666 /* GlobalData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalData.h; sourceTree = "<group>"; };
 		31BCA6D91D4D024D00192666 /* GlobalData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalData.m; sourceTree = "<group>"; };
 		31BCA6E01D4D158600192666 /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
@@ -50,8 +54,6 @@
 		31D98F431D230D8400567C9D /* Zing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31D98F471D230D8500567C9D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		31D98F491D230D8500567C9D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		31D98F4C1D230D8500567C9D /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		31D98F4D1D230D8500567C9D /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		31D98F501D230D8500567C9D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		31D98F551D230D8600567C9D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		31D98F571D230D8600567C9D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -61,8 +63,6 @@
 		31D98F651D242BDB00567C9D /* UserInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfo.m; sourceTree = "<group>"; };
 		31D98F951D24E34500567C9D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		31D98F971D26164600567C9D /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
-		31D98F991D26C7EB00567C9D /* ContactsVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContactsVC.h; sourceTree = "<group>"; };
-		31D98F9A1D26C7F900567C9D /* ContactsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsVC.m; sourceTree = "<group>"; };
 		31D98F9B1D26C7F900567C9D /* ContactsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsCell.h; sourceTree = "<group>"; };
 		31D98F9C1D26C7F900567C9D /* ContactsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsCell.m; sourceTree = "<group>"; };
 		31D98FB11D26F45700567C9D /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contact.h; sourceTree = "<group>"; };
@@ -75,8 +75,8 @@
 		31D98FBD1D283F8100567C9D /* Address.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Address.h; sourceTree = "<group>"; };
 		31D98FBE1D283F9D00567C9D /* Address.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Address.m; sourceTree = "<group>"; };
 		31E183541D32C32A00739947 /* Zing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Zing.entitlements; sourceTree = "<group>"; };
-		31E8CC9E1D504B8100723528 /* LocationManagerSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationManagerSingleton.h; sourceTree = "<group>"; };
-		31E8CC9F1D504B8100723528 /* LocationManagerSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManagerSingleton.m; sourceTree = "<group>"; };
+		FDF55B511D783F5700967BEC /* LocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
+		FDF55B521D783F5700967BEC /* LocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,8 +114,8 @@
 				31D98F651D242BDB00567C9D /* UserInfo.m */,
 				31BCA6D81D4D024C00192666 /* GlobalData.h */,
 				31BCA6D91D4D024D00192666 /* GlobalData.m */,
-				31E8CC9E1D504B8100723528 /* LocationManagerSingleton.h */,
-				31E8CC9F1D504B8100723528 /* LocationManagerSingleton.m */,
+				FDF55B511D783F5700967BEC /* LocationManager.h */,
+				FDF55B521D783F5700967BEC /* LocationManager.m */,
 			);
 			name = "Global Data";
 			sourceTree = "<group>";
@@ -148,8 +148,8 @@
 				31D98F631D242BAF00567C9D /* Definitions.h */,
 				31D98F491D230D8500567C9D /* AppDelegate.h */,
 				31D98FB41D26F6A300567C9D /* AppDelegate.m */,
-				31D98F4C1D230D8500567C9D /* ViewController.h */,
-				31D98F4D1D230D8500567C9D /* ViewController.m */,
+				31B371C11D69BDDB00D0D5C7 /* Map.h */,
+				31B371C21D69BDDC00D0D5C7 /* Map.m */,
 				31BCA6DC1D4D109E00192666 /* Global Data */,
 				31D98FA21D26C81200567C9D /* Contacts */,
 				31D98FB91D28347A00567C9D /* Zoom */,
@@ -174,8 +174,8 @@
 		31D98FA21D26C81200567C9D /* Contacts */ = {
 			isa = PBXGroup;
 			children = (
-				31D98F991D26C7EB00567C9D /* ContactsVC.h */,
-				31D98F9A1D26C7F900567C9D /* ContactsVC.m */,
+				31B371C41D6A176200D0D5C7 /* Contacts.h */,
+				31B371C51D6A176200D0D5C7 /* Contacts.m */,
 				31D98F9B1D26C7F900567C9D /* ContactsCell.h */,
 				31D98F9C1D26C7F900567C9D /* ContactsCell.m */,
 				31D98FB11D26F45700567C9D /* Contact.h */,
@@ -305,15 +305,15 @@
 				31D98FBC1D28368600567C9D /* Zoom.m in Sources */,
 				31D98F661D242BDB00567C9D /* UserInfo.m in Sources */,
 				31D98FB31D26F45700567C9D /* Contact.m in Sources */,
-				31D98F4E1D230D8500567C9D /* ViewController.m in Sources */,
-				31D98F9D1D26C7F900567C9D /* ContactsVC.m in Sources */,
 				31D98F9E1D26C7F900567C9D /* ContactsCell.m in Sources */,
 				31BCA6E51D4D15BE00192666 /* Pair.m in Sources */,
+				FDF55B531D783F5700967BEC /* LocationManager.m in Sources */,
 				31D98FB81D28347200567C9D /* ZoomCell.m in Sources */,
-				31E8CCA01D504B8100723528 /* LocationManagerSingleton.m in Sources */,
 				31D98F481D230D8500567C9D /* main.m in Sources */,
+				31B371C61D6A176200D0D5C7 /* Contacts.m in Sources */,
 				31D98FBF1D283F9D00567C9D /* Address.m in Sources */,
 				316D59521D513EFF0010E6F3 /* About.m in Sources */,
+				31B371C31D69BDDC00D0D5C7 /* Map.m in Sources */,
 				31D98FB51D26F6A300567C9D /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -427,11 +427,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = tester/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thememedesign.zing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -441,11 +443,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = tester/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thememedesign.zing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

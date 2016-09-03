@@ -28,7 +28,7 @@
 		<true/>
 	</dict>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>I need Location</string>
+	<string>Your location is needed for this app.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>I need Location</string>
 	<key>UIBackgroundModes</key>

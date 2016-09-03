@@ -1,8 +1,8 @@
 //
-//  ViewController.h
-//  tester
+//  Map.h
+//  Zing
 //
-//  Created by Kostas on 6/28/16.
+//  Created by Kostas on 8/21/16.
 //  Copyright © 2016 Kostas Terzidis. All rights reserved.
 //
 
@@ -14,28 +14,28 @@
 #import "Location.h"
 #import "Pair.h"
 #import "GlobalData.h"
-#import "LocationManagerSingleton.h"
 
 
-@interface ViewController : UIViewController <	UISearchBarDelegate,
-                                                UISearchControllerDelegate,
-                                                CLLocationManagerDelegate,
-                                                UITableViewDataSource,
-                                                UITableViewDelegate,
-                                                UIScrollViewDelegate,
-                                                MKMapViewDelegate,
-                                                PushControlDelegate,
-                                                UIGestureRecognizerDelegate> {
 
+@interface Map : UIViewController <	UISearchBarDelegate,
+                                    UISearchControllerDelegate,
+                                    CLLocationManagerDelegate,
+                                    UITableViewDataSource,
+                                    UITableViewDelegate,
+                                    UIScrollViewDelegate,
+                                    MKMapViewDelegate,
+                                    PushControlDelegate,
+                                    MFMessageComposeViewControllerDelegate,
+                                    UIGestureRecognizerDelegate> {
     
-
+    
+    
 @private
-CGRect _searchTableViewRect;
+    CGRect _searchTableViewRect;
     
 }
 
 
-@property LocationManagerSingleton *locationManagerSingleton;
 @property CLLocation *myCurrentLocation;
 
 

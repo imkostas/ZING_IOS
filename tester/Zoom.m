@@ -8,6 +8,7 @@
 
 #import "Zoom.h"
 
+
 @interface Zoom () {
    
     BOOL switchStatus;
@@ -27,6 +28,54 @@
     
     [super viewDidLoad];
     
+    NSMutableDictionary *savedProfile;
+    NSArray *locationArray;
+    
+    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *fullPath = [NSString stringWithFormat:@"%@/%@", docDir, @"LocationArray.plist"];
+    
+    savedProfile = [[NSMutableDictionary alloc] initWithContentsOfFile:fullPath];
+    
+    if (savedProfile)
+    {
+        //Sort
+        locationArray = [[savedProfile objectForKey:@"LocationArray"] sortedArrayUsingDescriptors:@[ [[NSSortDescriptor alloc] initWithKey:@"Time" ascending:0]]];
+        NSMutableArray *temp = @[].mutableCopy;
+        for (NSDictionary *dic in locationArray)
+        {
+            if ([dic objectForKey:@"Accuracy"]) [temp addObject:dic];
+        }
+        locationArray = temp;
+    }
+    
+    NSLog(@"count = %lu", (unsigned long)locationArray.count);
+    for(int i=0; i<locationArray.count; i++){
+        NSDictionary *dic = [locationArray objectAtIndex:i];
+        NSString *appState = [NSString stringWithFormat:@"App State : %@",  [dic[@"AppState"] stringByReplacingOccurrencesOfString:@"UIApplicationState" withString:@""] ];
+        NSDate *date = dic[@"Time"];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.dateFormat = @"yyyy/MM/dd HH:mm";
+        NSString *time = [dateFormatter stringFromDate:date];
+        
+        if ([dic objectForKey:@"Accuracy"])
+        {
+            NSString *accuracy = [NSString stringWithFormat:@"Accuracy : %@",dic[@"Accuracy"]];
+            NSString *location = [NSString stringWithFormat:@"Location : %.06f , %.06f",[dic[@"Latitude"] floatValue],[dic[@"Longitude"] floatValue]];
+            NSString *addFromResum = [NSString stringWithFormat:@"Add From Resume : %@",[[dic objectForKey:@"AddFromResume"] boolValue] ? @"YES" : @"NO"];
+            
+            NSLog(@"%@\n%@\n%@\n%@\n%@",appState,addFromResum,accuracy,location,time);
+        }
+        else if ([dic objectForKey:@"Resume"])
+        {
+            NSLog(@"%@\n%@\n%@\n\n",appState,dic[@"Resume"],time);
+        }
+        else
+        {
+            NSLog(@"%@\n%@\n%@\n\n",appState,dic[@"applicationStatus"],time);
+        }
+        
+    }
+
     
     //initialize user info
     self.user = [UserInfo user];
@@ -35,6 +84,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshPairs) name:@"CreatePair" object:nil];
     
     // Get data from the server
+   // [self setEditing:YES animated:YES];
     [self refreshData];
     
     
@@ -185,7 +235,7 @@
         CLLocationCoordinate2D pointACoordinate = [selectedPerson coordinates];
        // NSLog(@"%f" , [selectedPerson coordinates].latitude);
         CLLocation *pointALocation = [[CLLocation alloc] initWithLatitude:pointACoordinate.latitude longitude:pointACoordinate.longitude];
-        CLLocationCoordinate2D pointBCoordinate = [LocationManagerSingleton sharedLocationInstance].myLocationManager.location.coordinate;
+        CLLocationCoordinate2D pointBCoordinate = [[LocationManager sharedManager] myLocation];
         CLLocation *pointBLocation = [[CLLocation alloc] initWithLatitude:pointBCoordinate.latitude longitude:pointBCoordinate.longitude];
         double distanceMeters = [pointALocation distanceFromLocation:pointBLocation];
         double distanceMiles = (distanceMeters / 1609.344);
@@ -311,11 +361,18 @@
     }
 }
 
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+    [self.index exchangeObjectAtIndex:fromIndexPath.row withObjectAtIndex:toIndexPath.row];
+
+}
 
 @end
-
-
-
 
 
 //    Location *location = [[Location alloc] init];

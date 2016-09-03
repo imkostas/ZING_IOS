@@ -10,6 +10,7 @@
 #import <MapKit/MapKit.h>
 
 #import "Definitions.h"
+#import "LocationManager.h"
 
 @protocol PushControlDelegate
 

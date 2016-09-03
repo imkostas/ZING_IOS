@@ -11,6 +11,7 @@
 #import "UserInfo.h"
 #import <AddressBookUI/AddressBookUI.h>
 #import "GlobalData.h"
+#import "LocationManager.h"
 
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
@@ -19,6 +20,8 @@
 
 
 @property (strong, nonatomic) UserInfo *user; //user info
+
+@property (strong,nonatomic) LocationManager * shareModel;
 
 @end
 

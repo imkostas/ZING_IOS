@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "LocationManagerSingleton.h"
+
 
 
 @interface AppDelegate ()
@@ -19,6 +19,61 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    
+    self.shareModel = [LocationManager sharedManager];
+    self.shareModel.afterResume = NO;
+    
+    [self.shareModel addApplicationStatusToPList:@"didFinishLaunchingWithOptions"];
+    
+    UIAlertView * alert;
+    
+    //We have to make sure that the Background App Refresh is enable for the Location updates to work in the background.
+    if ([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusDenied) {
+        
+        alert = [[UIAlertView alloc]initWithTitle:@""
+                                          message:@"The app doesn't work without the Background App Refresh enabled. To turn it on, go to Settings > General > Background App Refresh"
+                                         delegate:nil
+                                cancelButtonTitle:@"Ok"
+                                otherButtonTitles:nil, nil];
+        [alert show];
+        
+    } else if ([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusRestricted) {
+        
+        alert = [[UIAlertView alloc]initWithTitle:@""
+                                          message:@"The functions of this app are limited because the Background App Refresh is disable."
+                                         delegate:nil
+                                cancelButtonTitle:@"Ok"
+                                otherButtonTitles:nil, nil];
+        [alert show];
+        
+    } else {
+        
+        // When there is a significant changes of the location,
+        // The key UIApplicationLaunchOptionsLocationKey will be returned from didFinishLaunchingWithOptions
+        // When the app is receiving the key, it must reinitiate the locationManager and get
+        // the latest location updates
+        
+        // This UIApplicationLaunchOptionsLocationKey key enables the location update even when
+        // the app has been killed/terminated (Not in th background) by iOS or the user.
+        
+        NSLog(@"UIApplicationLaunchOptionsLocationKey : %@" , [launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]);
+        if ([launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]) {
+            
+            // This "afterResume" flag is just to show that he receiving location updates
+            // are actually from the key "UIApplicationLaunchOptionsLocationKey"
+            self.shareModel.afterResume = YES;
+            
+            [self.shareModel startMonitoringLocation];
+            [self.shareModel addResumeLocationToPList];
+        }
+    }
+
+    
+    
+    
+    
+    
     
     
     //initialize user info object (Singleton)
@@ -35,18 +90,6 @@
         
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
         
-    }
-    
-    if ([launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]) {
-        
-        
-        [[LocationManagerSingleton sharedLocationInstance].myLocationManager startMonitoringSignificantLocationChanges];
-        
-    }else{
-    /////////////////////////////
-    [[LocationManagerSingleton sharedLocationInstance]setDelegate:self];
-    [[LocationManagerSingleton sharedLocationInstance].myLocationManager startUpdatingLocation];
-    /////////////////////////////
     }
     
     
@@ -72,8 +115,10 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
-    [[LocationManagerSingleton sharedLocationInstance].myLocationManager stopUpdatingLocation];
-    [[LocationManagerSingleton sharedLocationInstance].myLocationManager startMonitoringSignificantLocationChanges];
+    
+    [self.shareModel restartMonitoringLocation];
+    [self.shareModel addApplicationStatusToPList:@"applicationDidEnterBackground"];
+    
     NSLog(@"entered background Mode");
    ////////// [[GlobalData shared] sendAPNS:self.user.udid withMessage:@"backgroundMode"]; ////////////
 
@@ -85,14 +130,21 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     
-    [[LocationManagerSingleton sharedLocationInstance].myLocationManager stopMonitoringSignificantLocationChanges];
-    [[LocationManagerSingleton sharedLocationInstance].myLocationManager startUpdatingLocation];
-    NSLog(@"application Did Become Active");
+     NSLog(@"application Did Become Active");
 }
 
 //**************************************************************************************//
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    
+    
+    [self.shareModel addApplicationStatusToPList:@"applicationDidBecomeActive"];
+    
+    //Remove the "afterResume" Flag after the app is active again.
+    self.shareModel.afterResume = NO;
+    
+    [self.shareModel startMonitoringLocation];
+
     
     //clear application's badges...but should do elsewhere//test IOS
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
@@ -103,6 +155,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [self.shareModel addApplicationStatusToPList:@"applicationWillTerminate"];
 }
 
 #pragma mark Push notifications

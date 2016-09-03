@@ -1,23 +1,23 @@
 //
-//  CustomTableViewController.m
-//  CustomTable
+//  Contacts.m
+//  Zing
 //
-//  Created by Simon on 7/12/13.
-//  Copyright (c) 2013 Appcoda. All rights reserved.
+//  Created by Kostas on 8/21/16.
+//  Copyright © 2016 Kostas Terzidis. All rights reserved.
 //
 
-#import "ContactsVC.h"
+#import "Contacts.h"
 #import "Contact.h"
 
-@interface ContactsVC ()
+@interface Contacts ()
 
 
 @end
 
-@implementation ContactsVC
+@implementation Contacts
 
 {
-
+    
     NSMutableArray *contacts;
     NSArray *searchResults;
     
@@ -26,7 +26,7 @@
     
     Contact *contact;
     UserInfo *userinfo;
-
+    
 }
 
 
@@ -38,7 +38,7 @@
     self.user = [UserInfo user];
     
     
-
+    
     
     // Request authorization to Address Book
     ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, NULL);
@@ -47,8 +47,8 @@
         ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
             if (granted) {
                 // First time access has been granted, add the contact
-//                [self listPeopleInAddressBook:addressBookRef];
-//                if (addressBookRef) CFRelease(addressBookRef);
+                //                [self listPeopleInAddressBook:addressBookRef];
+                //                if (addressBookRef) CFRelease(addressBookRef);
                 NSLog(@"_addContactToAddressBook1");
             } else {
                 // User denied access
@@ -132,26 +132,28 @@
     } else {
         contact = [contacts objectAtIndex:indexPath.row];
     }
-    UIAlertView * alert =[[UIAlertView alloc ] initWithTitle:contact.name message:@"Send an invitation to get Zing" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
-    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
-    [alert addButtonWithTitle:@"Send"];
-    UITextField* textField = [alert textFieldAtIndex:0];
-    textField.text =contact.phone;
-    [alert show];
+    [self sendSMS:contact];
+    
+    //    UIAlertView * alert =[[UIAlertView alloc ] initWithTitle:contact.name message:@"Send an invitation to get Zing" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: nil];
+    //    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    //    [alert addButtonWithTitle:@"Send"];
+    //    UITextField* textField = [alert textFieldAtIndex:0];
+    //    textField.text =contact.phone;
+    //    [alert show];
     
 }
 
 //***********
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 1) {  //Send
-        UITextField *phone = [alertView textFieldAtIndex:0];
-        NSLog(@"phone: %@", [phone.text isEqualToString:(@"")]?contact.phone:phone.text);
-        [self sendSMS:contact];
-
-    }
-}
+//- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+//{
+//    if (buttonIndex == 1) {  //Send
+//        UITextField *phone = [alertView textFieldAtIndex:0];
+//        NSLog(@"phone: %@", [phone.text isEqualToString:(@"")]?contact.phone:phone.text);
+//        [self sendSMS:contact];
+//
+//    }
+//}
 
 
 //*********************************************************************************************************
@@ -178,7 +180,7 @@
 {
     contacts = [NSMutableArray new];
     numberOfPeople = ABAddressBookGetPersonCount(addressBook);
-     allPeople = CFBridgingRelease(ABAddressBookCopyArrayOfAllPeople(addressBook));
+    allPeople = CFBridgingRelease(ABAddressBookCopyArrayOfAllPeople(addressBook));
     
     for (NSInteger i = 0; i < numberOfPeople; i++) {
         ABRecordRef person = (__bridge ABRecordRef)allPeople[i];
@@ -187,14 +189,14 @@
         NSString *lastName  = CFBridgingRelease(ABRecordCopyValue(person, kABPersonLastNameProperty));
         NSData  *imgData = CFBridgingRelease(ABPersonCopyImageData(person));
         
-       // NSLog(@"Name:%@ %@", firstName, lastName);
+        // NSLog(@"Name:%@ %@", firstName, lastName);
         
         ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);
         
         CFIndex numberOfPhoneNumbers = ABMultiValueGetCount(phoneNumbers);
         for (CFIndex i = 0; i < numberOfPhoneNumbers; i++) {
             NSString *phoneNumber = CFBridgingRelease(ABMultiValueCopyValueAtIndex(phoneNumbers, i));
-        //    NSLog(@"  phone:%@", phoneNumber);
+            //    NSLog(@"  phone:%@", phoneNumber);
             contact = [Contact new];
             contact.name = [NSString stringWithFormat:@"%@ %@", (firstName==NULL)?@"":firstName, (lastName==NULL)?@"":lastName];
             contact.phone = [NSString stringWithFormat:@"%@", (phoneNumber==NULL)?@"":phoneNumber];
@@ -204,38 +206,12 @@
         
         CFRelease(phoneNumbers);
         
-      //  NSLog(@"=============================================");
+        //  NSLog(@"=============================================");
     }
 }
 
 
 
-
-
-//**************************************************************************************
-
-- (void)sendAPNS:(Contact*)myContact {
-    
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    
-    [request setURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@notification/%@&Do you wanna Zing?", self.user.uri, self.user.udid ]]];
-    NSLog(@"set %@", request.URL);
-    
-    [request setHTTPMethod:@"GET"];
-    
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-    [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (!error) {
-            NSString *requestReply = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-            NSLog(@"set requestReply: %@", requestReply);
-        } else {
-            NSLog(@"error : %@", error.description);
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Error Connecting to Server" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alertView show];
-        }
-    }] resume];
-    
-}
 
 
 //**************************************************************************************
@@ -249,7 +225,7 @@
     }
     
     NSArray *recipients = @[myContact.phone];
-    NSString *message = [NSString stringWithFormat:@"I would like to invite you to use zing\n%@", myContact.name];
+    NSString *message = [NSString stringWithFormat:@"%@ would like to invite you to use zing\nThank you", myContact.name];
     
     MFMessageComposeViewController *messageController = [[MFMessageComposeViewController alloc] init];
     messageController.messageComposeDelegate = self;
@@ -264,8 +240,14 @@
 {
     switch (result) {
         case MessageComposeResultCancelled:
-            break;
+        {
+            NSLog(@"CANCELED");
+            // [self presentViewController:self animated:YES completion:nil];
+            //            UIViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ContactsVC"];
+            //            [self.navigationController presentViewController:viewController animated:YES completion:nil];
             
+            break;
+        }
         case MessageComposeResultFailed:
         {
             UIAlertView *warningAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Failed to send SMS!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -274,6 +256,8 @@
         }
             
         case MessageComposeResultSent:
+            NSLog(@"SENT");
+            //            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@""]]];
             break;
             
         default:
