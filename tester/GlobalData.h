@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "UserInfo.h"
-#import "Location.h"
+#import "User.h"
 #import "Pair.h"
 #import <MessageUI/MessageUI.h>
 
@@ -26,7 +26,7 @@
 
 // global function
 - (void) myFunc;
-- (Location *) GetLocation: (NSString *)udid;
+- (User *) GetLocation: (NSString *)udid;
 - (void) SetLocation: (CLLocation *)location;
 - (void) CreatePair:(NSString *) udid1 and:(NSString *) udid2;
 - (void) RemovePair:(NSString *) udid1 and:(NSString *) udid2;

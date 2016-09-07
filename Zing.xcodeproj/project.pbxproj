@@ -15,7 +15,6 @@
 		31B371C31D69BDDC00D0D5C7 /* Map.m in Sources */ = {isa = PBXBuildFile; fileRef = 31B371C21D69BDDC00D0D5C7 /* Map.m */; };
 		31B371C61D6A176200D0D5C7 /* Contacts.m in Sources */ = {isa = PBXBuildFile; fileRef = 31B371C51D6A176200D0D5C7 /* Contacts.m */; };
 		31BCA6DA1D4D024D00192666 /* GlobalData.m in Sources */ = {isa = PBXBuildFile; fileRef = 31BCA6D91D4D024D00192666 /* GlobalData.m */; };
-		31BCA6E21D4D158600192666 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 31BCA6E11D4D158600192666 /* Location.m */; };
 		31BCA6E51D4D15BE00192666 /* Pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 31BCA6E41D4D15BE00192666 /* Pair.m */; };
 		31D98F481D230D8500567C9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98F471D230D8500567C9D /* main.m */; };
 		31D98F511D230D8500567C9D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31D98F4F1D230D8500567C9D /* Main.storyboard */; };
@@ -31,6 +30,7 @@
 		31D98FBC1D28368600567C9D /* Zoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98FBB1D28368600567C9D /* Zoom.m */; };
 		31D98FBF1D283F9D00567C9D /* Address.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98FBE1D283F9D00567C9D /* Address.m */; };
 		FDF55B531D783F5700967BEC /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDF55B521D783F5700967BEC /* LocationManager.m */; };
+		FDFA65001D7B28EF006F3912 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = FDFA64FF1D7B28EF006F3912 /* User.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,8 +47,6 @@
 		31B371C51D6A176200D0D5C7 /* Contacts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contacts.m; sourceTree = "<group>"; };
 		31BCA6D81D4D024C00192666 /* GlobalData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalData.h; sourceTree = "<group>"; };
 		31BCA6D91D4D024D00192666 /* GlobalData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalData.m; sourceTree = "<group>"; };
-		31BCA6E01D4D158600192666 /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
-		31BCA6E11D4D158600192666 /* Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Location.m; sourceTree = "<group>"; };
 		31BCA6E31D4D15BE00192666 /* Pair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pair.h; path = ../Pair.h; sourceTree = "<group>"; };
 		31BCA6E41D4D15BE00192666 /* Pair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Pair.m; path = ../Pair.m; sourceTree = "<group>"; };
 		31D98F431D230D8400567C9D /* Zing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zing.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,6 +75,8 @@
 		31E183541D32C32A00739947 /* Zing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Zing.entitlements; sourceTree = "<group>"; };
 		FDF55B511D783F5700967BEC /* LocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
 		FDF55B521D783F5700967BEC /* LocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManager.m; sourceTree = "<group>"; };
+		FDFA64FE1D7B28EF006F3912 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		FDFA64FF1D7B28EF006F3912 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,8 +209,8 @@
 			children = (
 				31BCA6E31D4D15BE00192666 /* Pair.h */,
 				31BCA6E41D4D15BE00192666 /* Pair.m */,
-				31BCA6E01D4D158600192666 /* Location.h */,
-				31BCA6E11D4D158600192666 /* Location.m */,
+				FDFA64FE1D7B28EF006F3912 /* User.h */,
+				FDFA64FF1D7B28EF006F3912 /* User.m */,
 				312CD5271D2CC19600487C31 /* Pin.h */,
 				312CD5281D2CC22000487C31 /* Pin.m */,
 			);
@@ -300,9 +300,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				31BCA6DA1D4D024D00192666 /* GlobalData.m in Sources */,
-				31BCA6E21D4D158600192666 /* Location.m in Sources */,
 				312CD5291D2CC22000487C31 /* Pin.m in Sources */,
 				31D98FBC1D28368600567C9D /* Zoom.m in Sources */,
+				FDFA65001D7B28EF006F3912 /* User.m in Sources */,
 				31D98F661D242BDB00567C9D /* UserInfo.m in Sources */,
 				31D98FB31D26F45700567C9D /* Contact.m in Sources */,
 				31D98F9E1D26C7F900567C9D /* ContactsCell.m in Sources */,

@@ -127,7 +127,7 @@
 
 
 - (void)addLocationToPList:(BOOL)fromResume {
-    NSLog(@"addLocationToPList");
+   // NSLog(@"addLocationToPList");
     
     NSString * appState = [self appState];
     

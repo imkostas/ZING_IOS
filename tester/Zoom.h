@@ -10,7 +10,7 @@
 #import "Address.h"
 #import "ZoomCell.h"
 #import "Map.h"
-#import "Location.h"
+#import "User.h"
 
 @interface Zoom : UITableViewController <UITableViewDelegate, UITableViewDataSource>
 

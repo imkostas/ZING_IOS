@@ -1,18 +1,20 @@
 //
-//  Location.h
+//  User.h
 //  Zing
 //
-//  Created by Kostas on 7/30/16.
+//  Created by imkostas on 9/3/16.
 //  Copyright © 2016 Kostas Terzidis. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 
-@interface Location : NSObject
+@interface User : NSObject
 
 @property (nonatomic, strong) NSString *username; // name of user
 @property (nonatomic, strong) NSString *udid; // device token
 @property (nonatomic) CLLocationCoordinate2D coordinates;  //coords
+@property(nonatomic,retain) NSDate *time;  // time
 
 @end
+

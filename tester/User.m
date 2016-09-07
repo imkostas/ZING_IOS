@@ -1,17 +1,19 @@
 //
-//  Location.m
+//  User.m
 //  Zing
 //
-//  Created by Kostas on 7/30/16.
+//  Created by imkostas on 9/3/16.
 //  Copyright © 2016 Kostas Terzidis. All rights reserved.
 //
 
-#import "Location.h"
+#import "User.h"
 
-@implementation Location
+@implementation User
 
 @synthesize username;
 @synthesize udid;
 @synthesize coordinates;
+@synthesize time;
 
 @end
+

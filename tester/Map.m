@@ -13,10 +13,7 @@
 
 @interface Map () <UISearchDisplayDelegate, UISearchBarDelegate>{
     
-    BOOL updatedLocation;
     UserInfo *userinfo;
-    BOOL GetAllLocations;
-    BOOL SetLocation;
     
     
 }
@@ -43,14 +40,9 @@
     
     [super viewDidLoad];
     
-    // NSLog(@"DID LOAD");
-    
-    
     if(self.user==nil)
         self.user = [UserInfo user];
     
-    GetAllLocations = false;
-    SetLocation = false;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getAllLocations) name:@"SetLocation" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserLocation) name:@"GetAllLocations" object:nil];
     
@@ -74,22 +66,18 @@
     [self setupSearchController];
     [self setupSearchBar];
     
-    updatedLocation = false;
-    
-    
-    
-    //  NSTimer *tdata = [NSTimer scheduledTimerWithTimeInterval: 10.0  target: self  selector:@selector(refreshData)  userInfo: nil repeats:YES];
+    //  NSTimer *tdata = [NSTimer scheduledTimerWithTimeInterval: 10.0  target: self  selector:@selector(refreshMap)  userInfo: nil repeats:YES];
     //  [t invalidate];
     //  t = nil;
     
     //  NOT NEEDED?????
-    Location *location = [[Location alloc] init];
-    location.username = self.user.username;
-    location.udid = self.user.udid;
-    location.coordinates = self.user.coordinates;
-    [self.user.pairs addObject:location];  //add yourself as the first in list
+    User *me = [[User alloc] init];
+    me.username = self.user.username;
+    me.udid = self.user.udid;
+    me.coordinates = self.user.coordinates;
+    [self.user.pairs addObject:me];  //add yourself as the first in list
     
-    [self refreshData];
+    [self refreshMap];
     
 }
 
@@ -97,14 +85,14 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self refreshData];
+    [self refreshMap];
     
 }
 
 // ********************
 -(void) setLocation{
     
-    CLLocation *clocation = [[CLLocation alloc] initWithLatitude:self.user.coordinates.latitude longitude:self.user.coordinates.longitude];
+    CLLocation *clocation = [[CLLocation alloc] initWithLatitude:[[LocationManager sharedManager] myLocation].latitude longitude:[[LocationManager sharedManager] myLocation].longitude];
     [[GlobalData shared] SetLocation:clocation];
     
 }
@@ -119,7 +107,7 @@
 
 // **************************************************************************************
 
--(void)refreshData {
+-(void)refreshMap {
     
     [self setLocation];
     [self getAllLocations];
@@ -150,7 +138,7 @@
 - (IBAction)refresh:(id)sender {
     
     
-    [self refreshData];
+    [self refreshMap];
     
     [self zoomMapViewToFitAnnotations];
     for(int i=0; i<self.user.pairs.count; i++){
@@ -280,14 +268,14 @@ NSString *udidToDelete;
     NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
     if([title isEqualToString:@"Cancel"])
     {
-        [self refreshData];
+        [self refreshMap];
     }
     else if([title isEqualToString:@"YES"])
     {
         //add code here for when you hit delete
         [[GlobalData shared] RemovePair:self.user.udid and:udidToDelete];
         [[GlobalData shared] sendAPNS: self.user.username withUDID: udidToDelete withMessage:[NSString stringWithFormat:@"%@ has unpaired you", self.user.username] andIdentification:@"RemovePair"];
-        [self refreshData];
+        [self refreshMap];
     }
 }
 
@@ -642,7 +630,7 @@ NSString *udidToDelete;
     UIAlertView *newAlertVw = [[UIAlertView alloc] initWithTitle:title message:theMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [newAlertVw show];
     
-    [self refreshData];
+    [self refreshMap];
     
 }
 

@@ -24,7 +24,7 @@ static GlobalData *shared = nil;
         shared.group = dispatch_group_create();
 
         
-        NSLog(@"shared.message = %@",shared.message);
+        //NSLog(@"shared.message = %@",shared.message);
     }
     return shared;
 }
@@ -53,9 +53,9 @@ static GlobalData *shared = nil;
 
 //**************************************************************************************
 
-- (Location *) GetLocation: (NSString *)udid {
+- (User *) GetLocation: (NSString *)udid {
     
-    Location *location = [[Location alloc] init];
+    User *user = [[User alloc] init];
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSString *uri = URI;
@@ -70,11 +70,11 @@ static GlobalData *shared = nil;
             if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
                 NSError *jsonError;
                 NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-                if (jsonError) { NSLog(@"Error Parsing JSON");
+                if (jsonError) { NSLog(@"GET : Error Parsing JSON");
                 } else {
-                    location.username = [dictionary objectForKey:@"username"];
-                    location.udid = [dictionary objectForKey:@"udid"];
-                    location.coordinates = CLLocationCoordinate2DMake([[dictionary objectForKey:@"latitude"] floatValue], [[dictionary objectForKey:@"longitude"] floatValue]);
+                    user.username = [dictionary objectForKey:@"username"];
+                    user.udid = [dictionary objectForKey:@"udid"];
+                    user.coordinates = CLLocationCoordinate2DMake([[dictionary objectForKey:@"latitude"] floatValue], [[dictionary objectForKey:@"longitude"] floatValue]);
                     //NSLog(@"%@ (%.2f, %2f)",self.user.username, location.coordinates.latitude, location.coordinates.longitude);  //verify
                 }
             }  else { //Web server is returning an error
@@ -92,7 +92,7 @@ static GlobalData *shared = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"GetLocation" object:nil];               });
     }] resume];
 
-    return location;
+    return user;
 }
 
 
@@ -108,8 +108,14 @@ static GlobalData *shared = nil;
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSString *uri = URI;
     NSString *username = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
+    NSString *deviceID = [UIDevice currentDevice].identifierForVendor.UUIDString;
     NSString *udid = [[NSUserDefaults standardUserDefaults] valueForKey:@"udid"];
-    [request setURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@set/%@/%@/%f&%f", uri, username, udid, location.coordinate.latitude, location.coordinate.longitude]]];
+    // Get current datetime
+    NSDate *currentDateTime = [NSDate date];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd-HH:mm:ss"];
+    NSString *dateInString = [dateFormatter stringFromDate:currentDateTime];
+    [request setURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@set/%@/%@/%@/%f&%f&%@", uri, username, deviceID, udid, location.coordinate.latitude, location.coordinate.longitude, dateInString]]];
     NSLog(@"SetLocation %@", request.URL);
     
     [request setHTTPMethod:@"GET"];
@@ -216,15 +222,15 @@ static GlobalData *shared = nil;
                 NSError *jsonError;
                 NSArray *jsonArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
                 if (jsonError) {
-                    NSLog(@"Error Parsing JSON");
+                    NSLog(@"GET ALL : Error Parsing JSON");
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"error" object:nil userInfo:nil];
                 } else {
                     for(NSDictionary *item in jsonArray){
-                        Location *location = [[Location alloc] init];
-                        location.username = [[item objectForKey:@"username"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
-                        location.udid = [item objectForKey:@"udid"];
-                        location.coordinates = CLLocationCoordinate2DMake([[item objectForKey:@"latitude"] floatValue], [[item objectForKey:@"longitude"] floatValue]);
-                        [locations addObject:location];
+                        User *user = [[User alloc] init];
+                        user.username = [[item objectForKey:@"username"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
+                        user.udid = [item objectForKey:@"udid"];
+                        user.coordinates = CLLocationCoordinate2DMake([[item objectForKey:@"latitude"] floatValue], [[item objectForKey:@"longitude"] floatValue]);
+                        [locations addObject:user];
                     }
                 }
             }  else { //Web server is returning an error
@@ -275,14 +281,14 @@ static GlobalData *shared = nil;
             if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
                 NSError *jsonError;
                 NSArray *jsonArray = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
-                if (jsonError) { NSLog(@"Error Parsing JSON");
+                if (jsonError) { NSLog(@"GET INDEX : Error Parsing JSON");
                 } else {
                     for(NSDictionary *item in jsonArray){
-                        Location *location = [[Location alloc] init];
-                        location.username = [item objectForKey:@"username"];
-                        location.udid = [item objectForKey:@"udid"];
-                        location.coordinates = CLLocationCoordinate2DMake([[item objectForKey:@"latitude"] floatValue], [[item objectForKey:@"longitude"] floatValue]);
-                        [locations addObject:location];
+                        User *user = [[User alloc] init];
+                        user.username = [item objectForKey:@"username"];
+                        user.udid = [item objectForKey:@"udid"];
+                        user.coordinates = CLLocationCoordinate2DMake([[item objectForKey:@"latitude"] floatValue], [[item objectForKey:@"longitude"] floatValue]);
+                        [locations addObject:user];
                     }
                 }
             }  else { //Web server is returning an error

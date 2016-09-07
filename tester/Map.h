@@ -11,7 +11,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "Pin.h"
 #import "UserInfo.h"
-#import "Location.h"
+#import "User.h"
 #import "Pair.h"
 #import "GlobalData.h"
 

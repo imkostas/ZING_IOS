@@ -28,6 +28,8 @@
     
     [super viewDidLoad];
     
+    /////////////////////////test
+    
     NSMutableDictionary *savedProfile;
     NSArray *locationArray;
     
@@ -75,6 +77,8 @@
         }
         
     }
+    
+    ////////////////////////////test
 
     
     //initialize user info
@@ -86,16 +90,13 @@
     // Get data from the server
    // [self setEditing:YES animated:YES];
     [self refreshData];
-    
-    
+
     //initialize Spinner
     spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     spinner.center = CGPointMake(160, 240);
     spinner.hidesWhenStopped = YES;
     [self.view addSubview:spinner];
     [spinner startAnimating];
-
-
 
     // Initialize the refresh control
     self.refreshControl = [[UIRefreshControl alloc] init];
@@ -209,7 +210,7 @@
         cell = [[ZoomCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
   
-    Location *selectedPerson = [[Location alloc] init];
+    User *selectedPerson = [[User alloc] init];
     selectedPerson = [self.index objectAtIndex:indexPath.row];
 
     BOOL active = false;
@@ -224,12 +225,12 @@
         //Candidate names
         cell.name.textColor = [UIColor lightGrayColor];
         cell.name.text = selectedPerson.username;
-        cell.distance.text = @"Click to add";
+        cell.distance.text = @"Click to pair up";
         [cell.isZoomedSwitch setHidden:true];
     }
     else{
         //Name
-        cell.name.textColor = [UIColor blackColor];
+        //cell.name.textColor = [UIColor blackColor];
         cell.name.text = [selectedPerson.username stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         //Distance
         CLLocationCoordinate2D pointACoordinate = [selectedPerson coordinates];
@@ -263,21 +264,20 @@
     ZoomCell *cell = (ZoomCell *)[self.tableView cellForRowAtIndexPath:indexPath];
     [cell.isZoomedSwitch setOn:!cell.isZoomedSwitch.on animated:YES];
     
-    Location *location = [[Location alloc] init];
-    location = [self.index objectAtIndex:indexPath.row];
+    User *user = [[User alloc] init];
+    user = [self.index objectAtIndex:indexPath.row];
 
     //NSLog(@"------  isZoomedSwitch is %i", cell.isZoomedSwitch.isOn);
-    
         
     if([cell.isZoomedSwitch isHidden])
     {
         
-        if([location.udid isEqualToString:self.user.udid]){
+        if([user.udid isEqualToString:self.user.udid]){
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Sorry" message:@"You can't connect with yourself" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alertView show];
         }
         else{
-            [[GlobalData shared] CreatePair:self.user.udid and:location.udid];
+            [[GlobalData shared] CreatePair:self.user.udid and:user.udid];
             [self refreshData];
         }
 
@@ -294,7 +294,7 @@
         }
         
         [self switchChanged:cell.isZoomedSwitch];
-        [[NSUserDefaults standardUserDefaults] setBool:switchStatus forKey:location.udid];
+        [[NSUserDefaults standardUserDefaults] setBool:switchStatus forKey:user.udid];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
 
@@ -336,6 +336,14 @@
 
 }
 
+-(NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //Set NSString for button display text here.
+    NSString *newTitle = @"UNPAIR";
+    return newTitle;
+    
+}
+
 // ****************************************************************
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -347,10 +355,10 @@
     else if([title isEqualToString:@"YES"])
     {
         //add code here for when you hit delete
-        Location *location = [[Location alloc] init];
-        location = [self.index objectAtIndex:self.indexPathToBeDeleted.row];
-        [[GlobalData shared] RemovePair:self.user.udid and:location.udid];
-        [[GlobalData shared] sendAPNS: self.user.username withUDID: location.udid withMessage:[NSString stringWithFormat:@"%@ has unpaired you", self.user.username] andIdentification:@"RemovePair"];
+        User *user = [[User alloc] init];
+        user = [self.index objectAtIndex:self.indexPathToBeDeleted.row];
+        [[GlobalData shared] RemovePair:self.user.udid and:user.udid];
+        [[GlobalData shared] sendAPNS: self.user.username withUDID: user.udid withMessage:[NSString stringWithFormat:@"%@ has unpaired you", self.user.username] andIdentification:@"RemovePair"];
 
 
         // delete cell

@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 
 
-
 @interface AppDelegate ()
 
 @end
@@ -41,7 +40,7 @@
     } else if ([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusRestricted) {
         
         alert = [[UIAlertView alloc]initWithTitle:@""
-                                          message:@"The functions of this app are limited because the Background App Refresh is disable."
+                                          message:@"The functions of this app are limited because the Background App Refresh is disabled."
                                          delegate:nil
                                 cancelButtonTitle:@"Ok"
                                 otherButtonTitles:nil, nil];
@@ -57,7 +56,7 @@
         // This UIApplicationLaunchOptionsLocationKey key enables the location update even when
         // the app has been killed/terminated (Not in th background) by iOS or the user.
         
-        NSLog(@"UIApplicationLaunchOptionsLocationKey : %@" , [launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]);
+        //NSLog(@"UIApplicationLaunchOptionsLocationKey : %@" , [launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]);
         if ([launchOptions objectForKey:UIApplicationLaunchOptionsLocationKey]) {
             
             // This "afterResume" flag is just to show that he receiving location updates
@@ -96,6 +95,8 @@
     //clear application's badges...but should do elsewhere
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 
+
+    //NSLog(@"currentDevice = %@", [UIDevice currentDevice].identifierForVendor.UUIDString);
     
     return YES;
 }

@@ -45,6 +45,7 @@
 @property (nonatomic) CLLocationCoordinate2D coordinates;
 @property (nonatomic) float userSpeed;
 @property (nonatomic, strong) NSString *udid;
+@property (nonatomic, strong) NSString *deviceID;
 @property (nonatomic) unsigned int deviceType;
 
 //user chat info
@@ -69,7 +70,6 @@
 @property (nonatomic, strong) NSMutableArray *searches;
 
 @property (nonatomic, strong) NSMutableArray *pairs;
-@property (nonatomic, strong) NSMutableArray *all;
 
 @property (nonatomic) BOOL showTerms;
 

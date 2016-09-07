@@ -30,6 +30,7 @@
 @synthesize coordinates;
 @synthesize userSpeed;
 @synthesize udid;
+@synthesize deviceID;
 @synthesize deviceType;
 
 @synthesize chatCanSendMessage;
@@ -53,7 +54,6 @@
 @synthesize searches;
 
 @synthesize pairs;
-@synthesize all;
 
 //initializes user singleton
 + (UserInfo *)user {
@@ -108,11 +108,12 @@
         //initialize user profile info
         //username = [[[UIDevice currentDevice] name] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding ];
         username = [[UIDevice currentDevice] name] ;
-
-                email = @"";
+        email = @"";
         profileImage = nil;
         userSpeed = 0.0f;
-        udid = @"";
+        udid = @"";     //Unique ID for the app (given from the appStore so it may change)
+        deviceID = [UIDevice currentDevice].identifierForVendor.UUIDString;  //Unique ID for the device (won't change)
+        //So we compare deviceID and udid and if they don't match we change the udid everywhere (e.g. database) to the new udid 
         deviceType = 1;
         
         userImages = [[NSCache alloc] init];
@@ -130,7 +131,7 @@
         searches = [[NSMutableArray alloc] init];
         
         pairs = [[NSMutableArray alloc] init];
-        all = [[NSMutableArray alloc] init];
+
         
     }
     
