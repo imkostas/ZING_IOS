@@ -15,7 +15,6 @@
 		31B371C31D69BDDC00D0D5C7 /* Map.m in Sources */ = {isa = PBXBuildFile; fileRef = 31B371C21D69BDDC00D0D5C7 /* Map.m */; };
 		31B371C61D6A176200D0D5C7 /* Contacts.m in Sources */ = {isa = PBXBuildFile; fileRef = 31B371C51D6A176200D0D5C7 /* Contacts.m */; };
 		31BCA6DA1D4D024D00192666 /* GlobalData.m in Sources */ = {isa = PBXBuildFile; fileRef = 31BCA6D91D4D024D00192666 /* GlobalData.m */; };
-		31BCA6E51D4D15BE00192666 /* Pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 31BCA6E41D4D15BE00192666 /* Pair.m */; };
 		31D98F481D230D8500567C9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98F471D230D8500567C9D /* main.m */; };
 		31D98F511D230D8500567C9D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31D98F4F1D230D8500567C9D /* Main.storyboard */; };
 		31D98F561D230D8600567C9D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31D98F541D230D8600567C9D /* LaunchScreen.storyboard */; };
@@ -29,6 +28,11 @@
 		31D98FB81D28347200567C9D /* ZoomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98FB71D28347200567C9D /* ZoomCell.m */; };
 		31D98FBC1D28368600567C9D /* Zoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98FBB1D28368600567C9D /* Zoom.m */; };
 		31D98FBF1D283F9D00567C9D /* Address.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D98FBE1D283F9D00567C9D /* Address.m */; };
+		FD0562651D8AD5C700AAB313 /* Messages.m in Sources */ = {isa = PBXBuildFile; fileRef = FD0562641D8AD5C600AAB313 /* Messages.m */; };
+		FD0C6DF11D82FD1A000965F4 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = FD0C6DF01D82FD1A000965F4 /* Message.m */; };
+		FD0C6DF41D82FD40000965F4 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = FD0C6DF31D82FD40000965F4 /* Settings.m */; };
+		FD2A65921D7FBD0800C2D526 /* Pair.m in Sources */ = {isa = PBXBuildFile; fileRef = FD2A65911D7FBD0800C2D526 /* Pair.m */; };
+		FD84FB971D8C98D100024434 /* MessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FD84FB961D8C98D000024434 /* MessageCell.m */; };
 		FDF55B531D783F5700967BEC /* LocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDF55B521D783F5700967BEC /* LocationManager.m */; };
 		FDFA65001D7B28EF006F3912 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = FDFA64FF1D7B28EF006F3912 /* User.m */; };
 /* End PBXBuildFile section */
@@ -47,8 +51,6 @@
 		31B371C51D6A176200D0D5C7 /* Contacts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contacts.m; sourceTree = "<group>"; };
 		31BCA6D81D4D024C00192666 /* GlobalData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalData.h; sourceTree = "<group>"; };
 		31BCA6D91D4D024D00192666 /* GlobalData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GlobalData.m; sourceTree = "<group>"; };
-		31BCA6E31D4D15BE00192666 /* Pair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pair.h; path = ../Pair.h; sourceTree = "<group>"; };
-		31BCA6E41D4D15BE00192666 /* Pair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Pair.m; path = ../Pair.m; sourceTree = "<group>"; };
 		31D98F431D230D8400567C9D /* Zing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31D98F471D230D8500567C9D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		31D98F491D230D8500567C9D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -73,6 +75,16 @@
 		31D98FBD1D283F8100567C9D /* Address.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Address.h; sourceTree = "<group>"; };
 		31D98FBE1D283F9D00567C9D /* Address.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Address.m; sourceTree = "<group>"; };
 		31E183541D32C32A00739947 /* Zing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Zing.entitlements; sourceTree = "<group>"; };
+		FD0562631D8AD5C600AAB313 /* Messages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Messages.h; sourceTree = "<group>"; };
+		FD0562641D8AD5C600AAB313 /* Messages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Messages.m; sourceTree = "<group>"; };
+		FD0C6DEF1D82FD1A000965F4 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
+		FD0C6DF01D82FD1A000965F4 /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
+		FD0C6DF21D82FD40000965F4 /* Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Settings.h; sourceTree = "<group>"; };
+		FD0C6DF31D82FD40000965F4 /* Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Settings.m; sourceTree = "<group>"; };
+		FD2A65901D7FBD0800C2D526 /* Pair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pair.h; sourceTree = "<group>"; };
+		FD2A65911D7FBD0800C2D526 /* Pair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Pair.m; sourceTree = "<group>"; };
+		FD84FB951D8C98D000024434 /* MessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageCell.h; sourceTree = "<group>"; };
+		FD84FB961D8C98D000024434 /* MessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageCell.m; sourceTree = "<group>"; };
 		FDF55B511D783F5700967BEC /* LocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationManager.h; sourceTree = "<group>"; };
 		FDF55B521D783F5700967BEC /* LocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationManager.m; sourceTree = "<group>"; };
 		FDFA64FE1D7B28EF006F3912 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
@@ -143,6 +155,9 @@
 			children = (
 				31D98F951D24E34500567C9D /* Assets.xcassets */,
 				31D98F4F1D230D8500567C9D /* Main.storyboard */,
+				FD84FB941D8C988B00024434 /* Messages */,
+				FD0C6DF21D82FD40000965F4 /* Settings.h */,
+				FD0C6DF31D82FD40000965F4 /* Settings.m */,
 				316D59501D513EFF0010E6F3 /* About.h */,
 				316D59511D513EFF0010E6F3 /* About.m */,
 				31D98F631D242BAF00567C9D /* Definitions.h */,
@@ -160,7 +175,7 @@
 				31D98F461D230D8500567C9D /* Supporting Files */,
 			);
 			name = zing;
-			path = tester;
+			path = ZING_IOS;
 			sourceTree = "<group>";
 		};
 		31D98F461D230D8500567C9D /* Supporting Files */ = {
@@ -207,14 +222,27 @@
 		31E8CC9D1D4FEBA100723528 /* Data Structures */ = {
 			isa = PBXGroup;
 			children = (
-				31BCA6E31D4D15BE00192666 /* Pair.h */,
-				31BCA6E41D4D15BE00192666 /* Pair.m */,
+				FD2A65901D7FBD0800C2D526 /* Pair.h */,
+				FD2A65911D7FBD0800C2D526 /* Pair.m */,
 				FDFA64FE1D7B28EF006F3912 /* User.h */,
 				FDFA64FF1D7B28EF006F3912 /* User.m */,
 				312CD5271D2CC19600487C31 /* Pin.h */,
 				312CD5281D2CC22000487C31 /* Pin.m */,
+				FD0C6DEF1D82FD1A000965F4 /* Message.h */,
+				FD0C6DF01D82FD1A000965F4 /* Message.m */,
 			);
 			name = "Data Structures";
+			sourceTree = "<group>";
+		};
+		FD84FB941D8C988B00024434 /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				FD0562631D8AD5C600AAB313 /* Messages.h */,
+				FD0562641D8AD5C600AAB313 /* Messages.m */,
+				FD84FB951D8C98D000024434 /* MessageCell.h */,
+				FD84FB961D8C98D000024434 /* MessageCell.m */,
+			);
+			name = Messages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -233,7 +261,7 @@
 			dependencies = (
 			);
 			name = Zing;
-			productName = tester;
+			productName = ZING_IOS;
 			productReference = 31D98F431D230D8400567C9D /* Zing.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -301,19 +329,23 @@
 			files = (
 				31BCA6DA1D4D024D00192666 /* GlobalData.m in Sources */,
 				312CD5291D2CC22000487C31 /* Pin.m in Sources */,
+				FD0C6DF41D82FD40000965F4 /* Settings.m in Sources */,
 				31D98FBC1D28368600567C9D /* Zoom.m in Sources */,
 				FDFA65001D7B28EF006F3912 /* User.m in Sources */,
+				FD84FB971D8C98D100024434 /* MessageCell.m in Sources */,
 				31D98F661D242BDB00567C9D /* UserInfo.m in Sources */,
 				31D98FB31D26F45700567C9D /* Contact.m in Sources */,
 				31D98F9E1D26C7F900567C9D /* ContactsCell.m in Sources */,
-				31BCA6E51D4D15BE00192666 /* Pair.m in Sources */,
 				FDF55B531D783F5700967BEC /* LocationManager.m in Sources */,
 				31D98FB81D28347200567C9D /* ZoomCell.m in Sources */,
 				31D98F481D230D8500567C9D /* main.m in Sources */,
+				FD2A65921D7FBD0800C2D526 /* Pair.m in Sources */,
 				31B371C61D6A176200D0D5C7 /* Contacts.m in Sources */,
 				31D98FBF1D283F9D00567C9D /* Address.m in Sources */,
+				FD0C6DF11D82FD1A000965F4 /* Message.m in Sources */,
 				316D59521D513EFF0010E6F3 /* About.m in Sources */,
 				31B371C31D69BDDC00D0D5C7 /* Map.m in Sources */,
+				FD0562651D8AD5C700AAB313 /* Messages.m in Sources */,
 				31D98FB51D26F6A300567C9D /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -426,9 +458,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = tester/Info.plist;
+				INFOPLIST_FILE = ZING_IOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.thememedesign.zing;
@@ -442,6 +475,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = tester/Info.plist;
